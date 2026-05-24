@@ -22,11 +22,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .step-num{width:20px;height:20px;border-radius:50%;background:#e94560;color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
 /* ── CATEGORY TILES — Photo P4 style ── */
-.cat-grid{display:grid;grid-template-columns:repeat(3,96px);gap:10px;justify-content:center;margin-bottom:10px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .cat-all-row{display:grid;grid-template-columns:1fr}
-.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:96px}
+.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:100%}
 .cat-tile:hover{opacity:.82}
-.tile-photo{width:96px;height:82px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
+.tile-photo{width:100%;height:82px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
 .tile-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.26) 100%)}
 .tile-accent-bar{width:26px;height:3px;border-radius:2px;flex-shrink:0}
 .tile-label{font-size:.72rem;font-weight:600;color:#444;line-height:1.3}
@@ -72,8 +72,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dist-chip:hover span{border-color:#ccc}
 
 /* ── FILTER BUTTONS ── */
-.filter-icon-strip{display:grid;grid-template-columns:repeat(3,96px);justify-content:center;gap:10px}
-.filt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:0;cursor:pointer;transition:all .2s;width:96px;height:82px}
+.filter-icon-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.filt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:0;cursor:pointer;transition:all .2s;width:100%;height:82px}
 .filt-btn .filt-icon{font-size:2rem;line-height:1}
 .filt-btn .filt-label{font-size:.62rem;font-weight:600;color:#777;white-space:nowrap}
 .filt-btn .filt-arrow{display:none}
@@ -584,4 +584,5 @@ function render(list,locLabel,maxDist,cats){
     <div class="card-meta">
       <div class="meta-item">🎂 <span>Ages <strong>${p.ageMin}–${p.ageMax}</strong></span></div>
       <div class="meta-item">💷 <span>${priceStr||'See website'}</span></div>
-      <div class="meta-item">📅 <span>Est. <stro
+      <div class="meta-item">📅 <span>Est. <strong>${p.founded}</strong></span></div>
+      <div
