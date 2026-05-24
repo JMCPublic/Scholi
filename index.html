@@ -22,11 +22,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .step-num{width:20px;height:20px;border-radius:50%;background:#e94560;color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
 /* ── CATEGORY TILES — Photo P4 style ── */
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,96px);gap:10px;justify-content:center;margin-bottom:10px}
 .cat-all-row{display:grid;grid-template-columns:1fr}
-.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:100%}
+.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:96px}
 .cat-tile:hover{opacity:.82}
-.tile-photo{width:100%;height:82px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
+.tile-photo{width:96px;height:82px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
 .tile-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.26) 100%)}
 .tile-accent-bar{width:26px;height:3px;border-radius:2px;flex-shrink:0}
 .tile-label{font-size:.72rem;font-weight:600;color:#444;line-height:1.3}
@@ -72,8 +72,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dist-chip:hover span{border-color:#ccc}
 
 /* ── FILTER BUTTONS ── */
-.filter-icon-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.filt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:0;cursor:pointer;transition:all .2s;width:100%;height:82px}
+.filter-icon-strip{display:grid;grid-template-columns:repeat(3,96px);justify-content:center;gap:10px}
+.filt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:0;cursor:pointer;transition:all .2s;width:96px;height:82px}
 .filt-btn .filt-icon{font-size:2rem;line-height:1}
 .filt-btn .filt-label{font-size:.62rem;font-weight:600;color:#777;white-space:nowrap}
 .filt-btn .filt-arrow{display:none}
@@ -234,6 +234,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="filt-btn" id="fbPrice" onclick="openPanel('price',this)">
         <span class="filt-icon">💷</span><span class="filt-label">Price</span><span class="filt-arrow">▾</span>
       </button>
+      <button class="filt-btn" id="fbRating" onclick="openPanel('rating',this)">
+        <span class="filt-icon">⭐</span><span class="filt-label">Rating</span><span class="filt-arrow">▾</span>
+      </button>
     </div>
 
     <div class="filter-panels" id="filterPanels">
@@ -288,6 +291,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="2"><span>£15–£25</span></label>
           <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="3"><span>£25–£35</span></label>
           <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="4"><span>£35+</span></label>
+        </div>
+        <!-- RATING -->
+      <div class="filt-panel" id="panel-rating">
+        <div class="panel-title">Minimum rating</div>
+        <div class="chip-row">
+          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4"><span>4+ ⭐</span></label>
+          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4.5"><span>4.5+ ⭐</span></label>
+          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4.8"><span>4.8+ ⭐</span></label>
         </div>
       </div>
     </div>
@@ -437,6 +448,7 @@ function onChipChange(){
     });
     const priceAny=[...document.querySelectorAll('input[name="priceF"]:checked,input[name="priceH"]:checked')].length>0;
     document.getElementById('fbPrice').classList.toggle('active',priceAny);
+    document.getElementById('fbRating').classList.toggle('active',!!document.querySelector('input[name="rating"]:checked'));
     // tip visibility: show if NO chips selected
     const anyChip=[...document.querySelectorAll('.filt-panel input:checked')].length>0;
     document.getElementById('searchTip').classList.toggle('visible',!anyChip);
@@ -493,6 +505,8 @@ function priceOk(p){
 }
 function applyRefine(p){
   const g=chk('gender'),s=chk('session'),w=chk('when');
+  const rEl=document.querySelector('input[name="rating"]:checked');
+  if(rEl&&p.rP<parseFloat(rEl.value))return false;
   if(g.length&&!g.includes(p.gender))return false;
   if(s.length&&!s.some(x=>p.sessions.includes(x)))return false;
   if(w.length){
@@ -570,24 +584,4 @@ function render(list,locLabel,maxDist,cats){
     <div class="card-meta">
       <div class="meta-item">🎂 <span>Ages <strong>${p.ageMin}–${p.ageMax}</strong></span></div>
       <div class="meta-item">💷 <span>${priceStr||'See website'}</span></div>
-      <div class="meta-item">📅 <span>Est. <strong>${p.founded}</strong></span></div>
-      <div class="meta-item"><span class="stars">${stars(p.rP)}</span>&nbsp;<strong>${p.rP}</strong>&nbsp;<span style="color:#aaa">(${p.rPN} parents)</span></div>
-      <div class="meta-item"><span class="stars">${stars(p.rK)}</span>&nbsp;<strong>${p.rK}</strong>&nbsp;<span style="color:#aaa">(${p.rKN} kids)</span></div>
-    </div>
-    <div class="card-divider"></div>
-    <div class="address-row"><span>📍</span><span>${p.addr}, ${p.town}&nbsp;<strong>${p.postcode}</strong></span></div>
-    <div class="contact-row">
-      <a class="contact-link" href="https://${p.web}" target="_blank" rel="noopener">🌐 ${p.web}</a>
-      <a class="contact-link" href="tel:${p.phone.replace(/\s/g,'')}">📞 ${p.phone}</a>
-      <a class="contact-link" href="mailto:${p.email}">✉️ ${p.email}</a>
-    </div>
-  </div>
-</div>`;
-  }
-  html+='</div>';
-  sec.innerHTML=html;
-  sec.scrollIntoView({behavior:'smooth'});
-}
-</script>
-</body>
-</html>                                                                                              
+      <div class="meta-item">📅 <span>Est. <stro
