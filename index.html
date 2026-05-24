@@ -22,11 +22,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .step-num{width:20px;height:20px;border-radius:50%;background:#e94560;color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
 /* ── CATEGORY TILES — Photo P4 style ── */
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,72px);gap:10px;margin-bottom:10px}
 .cat-all-row{display:grid;grid-template-columns:1fr}
-.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:100%}
+.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;transition:opacity .18s;width:72px}
 .cat-tile:hover{opacity:.82}
-.tile-photo{width:100%;height:72px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
+.tile-photo{width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;position:relative;overflow:hidden;filter:brightness(1.06) saturate(1.3)}
 .tile-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.26) 100%)}
 .tile-accent-bar{width:26px;height:3px;border-radius:2px;flex-shrink:0}
 .tile-label{font-size:.72rem;font-weight:600;color:#444;line-height:1.3}
@@ -75,7 +75,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .filter-icon-strip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .filter-icon-strip::-webkit-scrollbar{display:none}
 .filt-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:0;cursor:pointer;transition:all .2s;width:72px;height:72px}
-.filt-btn .filt-icon{font-size:1.7rem;line-height:1}
+.filt-btn .filt-icon{font-size:1.8rem;line-height:1}
 .filt-btn .filt-label{font-size:.62rem;font-weight:600;color:#777;white-space:nowrap}
 .filt-btn .filt-arrow{display:none}
 .filt-btn:hover{border-color:#ccc;background:#fafafa}
@@ -591,4 +591,4 @@ function render(list,locLabel,maxDist,cats){
 }
 </script>
 </body>
-</html>      
+</html>     
