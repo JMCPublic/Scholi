@@ -3,173 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Scholi – Find Children's Activities</title>
+<title>Scholi – Find Children's Activities Near You</title>
+<meta name="description" content="Find trusted holiday clubs, camps and classes near your child's school. Covering Guildford, Surrey and Middlesbrough.">
+<meta property="og:title" content="Scholi – Find Children's Activities">
+<meta property="og:description" content="Find trusted clubs, camps and classes near your child's school.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1B6B5E">
 <style>
+:root{
+  --accent:#1B6B5E;
+  --accent-h:#145449;
+  --accent-xl:#E8F5F2;
+  --bg:#F8F7F5;
+  --surface:#fff;
+  --text:#1A1A1A;
+  --text-mid:#4B5563;
+  --text-muted:#9CA3AF;
+  --border:#E5E7EB;
+  --border-strong:#D1D5DB;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
+  --r:10px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#0a0a0a;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* ── HEADER ── */
-.hero{background:#fff;padding:28px 16px 32px;border-bottom:1px solid #ebebeb}
+/* ── STICKY SEARCH BAR ── */
+.sticky-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;transform:translateY(-100%);transition:transform .3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sticky-bar.show{transform:translateY(0)}
+.sticky-brand{font-weight:800;font-size:1rem;color:var(--accent);letter-spacing:-.5px;white-space:nowrap}
+.sticky-dot{display:inline-block;width:5px;height:5px;background:var(--accent);border-radius:50%;margin-left:1px;vertical-align:middle;margin-bottom:2px}
+.sticky-summary{flex:1;font-size:.85rem;color:var(--text-mid);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sticky-edit{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.sticky-edit:hover{background:var(--accent-h)}
+
+/* ── HERO / HEADER ── */
+.hero{background:#F7F6F3;padding:32px 16px 40px;border-bottom:1px solid #E5E7EB}
 .hero-inner{max-width:640px;margin:0 auto}
-.brand{font-size:2rem;font-weight:900;letter-spacing:-2px;margin-bottom:3px;color:#0a0a0a}
-.tagline{font-size:.78rem;color:#aaa;margin-bottom:32px;font-weight:400;letter-spacing:.02em}
+.brand{font-size:1.6rem;font-weight:900;letter-spacing:-1px;margin-bottom:4px;color:#1A1A1A}
+.brand-dot{display:inline-block;width:7px;height:7px;background:#5FD4C2;border-radius:50%;margin-left:2px;vertical-align:middle;margin-bottom:4px}
+.tagline{font-size:.95rem;color:#6B7280;margin-bottom:28px}
 
 /* ── STEP BLOCKS ── */
-.step-block{margin-bottom:28px}
-.step-label{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#bbb;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.step-label::after{content:'';flex:1;height:1px;background:#ebebeb}
-.step-num{width:22px;height:22px;border-radius:50%;background:#0a0a0a;color:#fff;font-size:.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-block{margin-bottom:20px}
+.step-label{font-size:.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6B7280;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.step-num{background:var(--accent);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0}
 
-/* ── CATEGORY TILES — SVG icon style ── */
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.cat-all-row{display:grid;grid-template-columns:1fr}
-.cat-tile{background:transparent;border:none;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;transition:opacity .18s;width:100%}
-.cat-tile:hover{opacity:.75}
-.tile-icon-box{width:100%;height:82px;border-radius:8px;background:#fafafa;border:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.tile-icon-box svg{color:#0a0a0a;transition:color .2s}
-.tile-accent-bar{width:20px;height:2px;flex-shrink:0;background:#0a0a0a;transition:background .2s}
-.tile-label{font-size:.62rem;font-weight:700;color:#0a0a0a;letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
-/* Active state */
-.cat-tile.active .tile-icon-box{background:#0a0a0a;border-color:#0a0a0a}
-.cat-tile.active .tile-icon-box svg{color:#fff}
-/* All activities — plain pill */
-.cat-all{background:#f5f5f5;border:1px solid #e8e8e8 !important;border-radius:6px !important;padding:11px !important;font-size:.72rem;font-weight:700;color:#555;width:100%;letter-spacing:.06em;text-transform:uppercase}
-.cat-all.active{background:#0a0a0a;border-color:#0a0a0a !important;color:#fff}
-.cat-all .tile-icon-box,.cat-all .tile-accent-bar{display:none}
+/* ── CATEGORY TILES ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat-tile{background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:12px 6px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .18s;color:#374151;font-size:.8rem;font-weight:600;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.cat-tile:hover{background:#F0FDFB;border-color:var(--accent)}
+.cat-tile.active{background:rgba(255,255,255,.95);color:var(--accent);border-color:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.cat-tile.active .tile-icon-box svg{stroke:var(--accent)}
+.tile-icon-box{width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.tile-icon-box svg{stroke:#6B7280;transition:stroke .18s}
+.tile-label{}
 
-/* ── LOCATION ── */
-.loc-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px}
-.loc-or{font-size:.65rem;color:#ccc;font-weight:700;text-align:center;letter-spacing:.08em;text-transform:uppercase}
-.loc-input{width:100%;padding:11px 14px;border-radius:6px;border:1px solid #e0e0e0;background:#fafafa;color:#0a0a0a;font-size:.85rem;outline:none;transition:border-color .2s}
-.loc-input::placeholder{color:#ccc}
-.loc-input:focus{border-color:#0a0a0a;background:#fff}
-.quick-areas{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-.quick-areas::-webkit-scrollbar{display:none}
-.qa-btn{flex-shrink:0;padding:5px 12px;border-radius:4px;border:1px solid #e0e0e0;background:#fff;color:#666;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.03em}
-.qa-btn:hover,.qa-btn.active{background:#0a0a0a;border-color:#0a0a0a;color:#fff}
+/* Per-category active colours */
+.cat-tile[data-cat="Sports"].active{color:#1B6B5E}
+.cat-tile[data-cat="Sports"].active .tile-icon-box svg{stroke:#1B6B5E}
+.cat-tile[data-cat="Drama"].active{color:#6D28D9}
+.cat-tile[data-cat="Drama"].active .tile-icon-box svg{stroke:#6D28D9}
+.cat-tile[data-cat="Dance"].active{color:#B45309}
+.cat-tile[data-cat="Dance"].active .tile-icon-box svg{stroke:#B45309}
+.cat-tile[data-cat="Learning"].active{color:#3730A3}
+.cat-tile[data-cat="Learning"].active .tile-icon-box svg{stroke:#3730A3}
+.cat-tile[data-cat="General"].active{color:#C2410C}
+.cat-tile[data-cat="General"].active .tile-icon-box svg{stroke:#C2410C}
+.cat-tile[data-cat="Creative"].active{color:#B91C1C}
+.cat-tile[data-cat="Creative"].active .tile-icon-box svg{stroke:#B91C1C}
 
-/* ── DISTANCE CHIPS ── */
-.dist-row{display:flex;gap:6px;flex-wrap:wrap}
-.dist-chip{cursor:pointer}
-.dist-chip input{display:none}
-.dist-chip span{display:inline-block;padding:7px 16px;border-radius:4px;border:1px solid #e0e0e0;background:#fff;color:#555;font-size:.75rem;font-weight:600;transition:all .2s;letter-spacing:.03em}
-.dist-chip input:checked+span{background:#0a0a0a;border-color:#0a0a0a;color:#fff}
-.dist-chip:hover span{border-color:#aaa}
+.cat-all-row{margin-top:8px}
+.cat-all{width:100%;border-radius:8px;padding:9px;font-size:.82rem;background:#F3F4F6;border-color:#D1D5DB;color:#6B7280}
 
-/* ── FILTER BUTTONS ── */
-.filter-icon-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.filt-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:0;cursor:pointer;transition:all .2s;width:100%;height:86px}
-.filt-btn svg{color:#0a0a0a;transition:color .2s}
-.filt-btn .filt-label{font-size:.55rem;font-weight:700;color:#888;letter-spacing:.1em;text-transform:uppercase}
-.filt-btn .filt-arrow{display:none}
-.filt-btn:hover{border-color:#aaa;background:#f0f0f0}
-.filt-btn.active{background:#0a0a0a;border-color:#0a0a0a}
-.filt-btn.active svg{color:#fff}
-.filt-btn.active .filt-label{color:#fff}
-.filt-btn.panel-open{border-color:#0a0a0a;background:#f5f5f5}
+/* ── WHERE + DISTANCE ── */
+.where-row{display:flex;gap:8px;align-items:stretch}
+.loc-input{flex:1;background:#fff;border:1.5px solid #D1D5DB;border-radius:8px;padding:11px 14px;font-size:.95rem;color:var(--text);outline:none;min-width:0}
+.loc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,107,94,.12)}
+.dist-select{background:#fff;border:1.5px solid #D1D5DB;border-radius:8px;padding:11px 12px;font-size:.85rem;color:var(--text);cursor:pointer;outline:none;flex-shrink:0}
+.quick-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick-chip{background:#fff;border:1.5px solid #D1D5DB;border-radius:20px;padding:5px 12px;font-size:.78rem;color:#4B5563;cursor:pointer;transition:all .15s;font-weight:500}
+.quick-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-xl)}
 
 /* ── FILTER PANELS ── */
-.filter-panels{margin-top:8px}
-.filt-panel{display:none;background:#fafafa;border-radius:8px;padding:14px;border:1px solid #ebebeb;animation:slideDown .2s ease}
+.filt-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.filt-btn{background:#fff;border:1.5px solid #D1D5DB;border-radius:20px;color:#4B5563;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px}
+.filt-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filt-btn.active,.filt-btn.panel-open{background:rgba(255,255,255,.9);color:var(--accent);border-color:rgba(255,255,255,.9)}
+.filt-icon{width:14px;height:14px}
+.filt-chevron{font-size:.65rem;opacity:.7;margin-left:2px}
+
+.filt-panel{display:none;background:rgba(255,255,255,.97);border-radius:12px;padding:16px;margin-bottom:8px;color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .filt-panel.open{display:block}
-@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.panel-title{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#bbb;margin-bottom:10px}
-.chip-row{display:flex;flex-wrap:wrap;gap:6px}
-.chip{cursor:pointer}
-.chip input{display:none}
-.chip span{display:inline-block;padding:6px 14px;border-radius:4px;border:1px solid #e0e0e0;background:#fff;color:#555;font-size:.78rem;font-weight:600;transition:all .18s}
-.chip input:checked+span{background:#0a0a0a;border-color:#0a0a0a;color:#fff}
-.chip:hover span{border-color:#aaa}
+.filt-panel-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px}
+.filt-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip-label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.chip-label input{display:none}
+.chip{background:#F3F4F6;border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.8rem;font-weight:500;color:var(--text-mid);transition:all .15s;cursor:pointer;user-select:none}
+.chip-label input:checked + .chip{background:var(--accent-xl);border-color:var(--accent);color:var(--accent);font-weight:700}
+.chip-label:hover .chip{border-color:var(--accent);color:var(--accent)}
 
-/* ── DATE RANGE PICKER ── */
-.panel-divider{height:1px;background:#ebebeb;margin:12px 0}
-.date-range-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
-.date-field{display:flex;flex-direction:column;gap:5px}
-.date-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb}
-.date-input{width:100%;padding:8px 10px;border-radius:4px;border:1px solid #e0e0e0;background:#fff;color:#0a0a0a;font-size:.78rem;font-weight:600;outline:none;transition:border-color .2s;cursor:pointer;font-family:inherit}
-.date-input:focus{border-color:#0a0a0a}
-.date-sep{font-size:.9rem;color:#ccc;font-weight:600;text-align:center;padding-bottom:9px}
-.date-hint{font-size:.65rem;color:#bbb;margin-top:8px;line-height:1.5}
-.date-clear{display:none;background:none;border:none;font-size:.65rem;color:#888;cursor:pointer;padding:4px 0;letter-spacing:.04em;text-decoration:underline;font-family:inherit}
-.date-clear.show{display:inline-block}
+.date-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.date-input{background:#F3F4F6;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:.85rem;color:var(--text);outline:none}
+.date-input:focus{border-color:var(--accent);background:#fff}
+.date-note{font-size:.75rem;color:var(--text-muted);margin-top:6px}
+.date-clear-btn{background:none;border:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:4px;display:none}
+.date-clear-btn.show{display:inline-block}
+.date-clear-btn:hover{color:var(--text);background:#F3F4F6}
 
-/* ── TIP + SEARCH BTN ── */
-.search-tip{background:#fafafa;border:1px solid #ebebeb;border-radius:6px;padding:10px 14px;font-size:.75rem;color:#bbb;margin-top:14px;display:none;line-height:1.6}
-.search-tip.visible{display:block}
-.search-btn{width:100%;margin-top:18px;padding:16px;background:#0a0a0a;border:none;border-radius:6px;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer;transition:all .2s;letter-spacing:.12em;text-transform:uppercase}
-.search-btn:hover{background:#333;transform:translateY(-1px)}
-.search-btn:active{transform:translateY(0)}
+/* ── SEARCH BUTTON ── */
+.search-btn-wrap{margin-top:4px}
+.search-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;letter-spacing:-.2px}
+.search-btn:hover{background:var(--accent-h);box-shadow:0 4px 16px rgba(27,107,94,.3)}
+.search-btn:disabled{opacity:.6;cursor:not-allowed}
 
-/* ── RESULTS ── */
-.results-section{max-width:640px;margin:0 auto;padding:20px 16px;background:#fff}
-.results-meta{font-size:.85rem;color:#999;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.results-meta strong{color:#0a0a0a}
-.cards-grid{display:grid;gap:12px}
+/* ── RESULTS SECTION ── */
+.results-section{max-width:700px;margin:0 auto;padding:20px 16px 60px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.results-count{font-size:.88rem;color:var(--text-mid)}
+.count-num{font-size:1.6rem;font-weight:800;color:var(--text);line-height:1;display:block}
+.clear-filters-btn{background:none;border:1.5px solid var(--border-strong);border-radius:6px;color:var(--text-mid);font-size:.78rem;font-weight:600;padding:6px 12px;cursor:pointer;display:none;transition:all .15s}
+.clear-filters-btn.show{display:inline-flex;align-items:center;gap:4px}
+.clear-filters-btn:hover{border-color:var(--text-mid);color:var(--text);background:#F3F4F6}
 
-/* ── CARD ── */
-.card{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #ebebeb;transition:box-shadow .2s}
-.card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08)}
-.card-header{padding:14px 14px 10px;border-bottom:1px solid #f5f5f5}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
-.card-name{font-size:.95rem;font-weight:700;color:#0a0a0a;line-height:1.3}
-.card-dist{background:#0a0a0a;color:#fff;font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:4px;white-space:nowrap;flex-shrink:0;letter-spacing:.04em}
-.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
-.badge{font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.03em}
-.badge-cat{background:#f0f0f0;color:#444}
-.badge-insured{background:#f0f0f0;color:#444}
-.badge-gender{background:#f0f0f0;color:#444}
-.badge-session{background:#f0f0f0;color:#444}
-.card-desc{font-size:.78rem;color:#888;line-height:1.5}
-.card-body{padding:10px 14px}
-.card-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;margin-bottom:10px}
-.meta-item{display:flex;align-items:center;gap:4px;font-size:.72rem;color:#888}
-.meta-item strong{color:#0a0a0a}
-.stars{color:#0a0a0a}
-.card-divider{height:1px;background:#f5f5f5;margin:8px 0}
-.address-row{display:flex;align-items:flex-start;gap:6px;font-size:.75rem;color:#888;margin-bottom:6px;line-height:1.5}
-.contact-row{display:flex;flex-wrap:wrap;gap:6px}
-.contact-link{font-size:.72rem;color:#0a0a0a;text-decoration:none;background:#f5f5f5;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:3px;transition:background .15s;font-weight:600}
-.contact-link:hover{background:#e8e8e8}
-.no-results{text-align:center;padding:40px 20px;color:#ccc}
-.no-results .no-icon{font-size:2.5rem;margin-bottom:12px}
-.no-results p{font-size:.9rem;line-height:1.6;color:#aaa}
-@media(min-width:640px){.cat-grid{grid-template-columns:repeat(3,1fr)}.cards-grid{grid-template-columns:repeat(2,1fr)}}
+/* ── CARDS ── */
+.cards-grid{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;transition:box-shadow .18s}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.card-cat-strip{height:4px;background:var(--accent)}
+.card[data-cat="Sports"] .card-cat-strip{background:#1B6B5E}
+.card[data-cat="Drama"] .card-cat-strip{background:#6D28D9}
+.card[data-cat="Dance"] .card-cat-strip{background:#B45309}
+.card[data-cat="Learning"] .card-cat-strip{background:#3730A3}
+.card[data-cat="General"] .card-cat-strip{background:#C2410C}
+.card[data-cat="Creative"] .card-cat-strip{background:#B91C1C}
+.card-inner{padding:16px}
+
+.card-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.card-avatar{width:44px;height:44px;border-radius:10px;background:var(--accent-xl);color:var(--accent);font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.5px}
+.card[data-cat="Drama"] .card-avatar{background:#F0ECF8;color:#6D28D9}
+.card[data-cat="Dance"] .card-avatar{background:#FEF5E7;color:#B45309}
+.card[data-cat="Learning"] .card-avatar{background:#EEF2FF;color:#3730A3}
+.card[data-cat="General"] .card-avatar{background:#FFF1E6;color:#C2410C}
+.card[data-cat="Creative"] .card-avatar{background:#FEF2F2;color:#B91C1C}
+
+.card-title-block{flex:1;min-width:0}
+.card-name{font-size:1rem;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:5px}
+.card-badges-row{display:flex;flex-wrap:wrap;gap:4px}
+.badge{border-radius:20px;padding:2px 8px;font-size:.72rem;font-weight:600;white-space:nowrap}
+.badge-cat{background:var(--accent-xl);color:var(--accent)}
+.card[data-cat="Drama"] .badge-cat{background:#F0ECF8;color:#6D28D9}
+.card[data-cat="Dance"] .badge-cat{background:#FEF5E7;color:#B45309}
+.card[data-cat="Learning"] .badge-cat{background:#EEF2FF;color:#3730A3}
+.card[data-cat="General"] .badge-cat{background:#FFF1E6;color:#C2410C}
+.card[data-cat="Creative"] .badge-cat{background:#FEF2F2;color:#B91C1C}
+.badge-dist{background:#F3F4F6;color:#374151}
+
+.card-price-block{text-align:right;flex-shrink:0}
+.price-from{font-size:.7rem;color:var(--text-muted)}
+.price-main{font-size:1.25rem;font-weight:800;color:var(--text);line-height:1}
+
+.card-desc{font-size:.875rem;color:var(--text-mid);line-height:1.5;margin-bottom:10px}
+
+.card-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;background:#FAFAFA;border-radius:8px;padding:10px}
+.info-item{text-align:center}
+.info-label{display:block;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);margin-bottom:2px}
+.info-value{font-size:.8rem;font-weight:600;color:var(--text)}
+
+.card-trust-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.trust-badge{font-size:.7rem;font-weight:600;padding:3px 8px;border-radius:20px}
+.trust-verified{background:#ECFDF5;color:#065F46}
+.trust-dbs{background:#EFF6FF;color:#1E40AF}
+.trust-insured{background:#F5F3FF;color:#5B21B6}
+.trust-reviews{background:#FFFBEB;color:#92400E}
+
+.card-cta-row{display:flex;gap:8px;margin-bottom:0}
+.enquire-btn{flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .18s}
+.enquire-btn:hover{background:var(--accent-h)}
+.card[data-cat="Drama"] .enquire-btn{background:#6D28D9}
+.card[data-cat="Drama"] .enquire-btn:hover{background:#5B21B6}
+.card[data-cat="Dance"] .enquire-btn{background:#B45309}
+.card[data-cat="Dance"] .enquire-btn:hover{background:#92400E}
+.card[data-cat="Learning"] .enquire-btn{background:#3730A3}
+.card[data-cat="Learning"] .enquire-btn:hover{background:#312E81}
+.card[data-cat="General"] .enquire-btn{background:#C2410C}
+.card[data-cat="General"] .enquire-btn:hover{background:#9A3412}
+.card[data-cat="Creative"] .enquire-btn{background:#B91C1C}
+.card[data-cat="Creative"] .enquire-btn:hover{background:#991B1B}
+.details-btn{background:none;border:1.5px solid var(--border-strong);border-radius:8px;padding:10px 14px;font-size:.84rem;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .15s;white-space:nowrap}
+.details-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-xl)}
+
+.card-contact{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.card-contact.open{display:block}
+.address-row{font-size:.82rem;color:var(--text-mid);margin-bottom:8px}
+.contact-links{display:flex;flex-wrap:wrap;gap:8px}
+.contact-link{font-size:.8rem;color:var(--accent);text-decoration:none;background:var(--accent-xl);border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;gap:4px}
+.contact-link:hover{background:#D1FAF0}
+
+/* ── NO RESULTS ── */
+.no-results{text-align:center;padding:40px 20px;color:var(--text-mid)}
+.no-icon{font-size:2.5rem;margin-bottom:12px}
+.no-results h3{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:8px}
+.no-results p{font-size:.88rem;margin-bottom:16px}
+.no-suggestions-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:8px}
+.no-suggestion-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.no-chip{background:var(--surface);border:1.5px solid var(--border-strong);border-radius:20px;padding:7px 16px;font-size:.82rem;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .15s}
+.no-chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── STARS ── */
+.stars{color:#F59E0B;font-size:.75rem;letter-spacing:1px}
 </style>
 </head>
 <body>
 
-<header class="hero">
+<!-- STICKY SEARCH BAR (appears after first search) -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-brand">Scholi<span class="sticky-dot"></span></div>
+  <span class="sticky-summary" id="stickySummary"></span>
+  <button class="sticky-edit" onclick="scrollToSearch()">Edit search</button>
+</div>
+
+<header class="hero" id="heroSection">
 <div class="hero-inner">
-  <div class="brand"><span>S</span>choli</div>
-  <p class="tagline">Find the perfect activity for your child</p>
+
+  <div class="brand">Scholi<span class="brand-dot"></span></div>
+  <p class="tagline">Find trusted clubs, camps and classes near your child's school.</p>
 
   <!-- STEP 1: CATEGORY -->
   <div class="step-block">
     <div class="step-label"><span class="step-num">1</span>Pick your activity</div>
     <div class="cat-grid">
       <button class="cat-tile" data-cat="Sports" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C10.5 6.5 10.5 9.5 12 12 C13.5 9.5 13.5 6.5 12 3"/><path d="M3 11.5 C6.5 10 9.5 10 12 12 C9.5 14 6.5 14 3 12.5"/><path d="M21 11.5 C17.5 10 14.5 10 12 12 C14.5 14 17.5 14 21 12.5"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Sports</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3C10.5 6.5 10.5 9.5 12 12C13.5 9.5 13.5 6.5 12 3"/><path d="M3 11.5C6.5 10 9.5 10 12 12C9.5 14 6.5 14 3 12.5"/><path d="M21 11.5C17.5 10 14.5 10 12 12C14.5 14 17.5 14 21 12.5"/></svg></div>
+        <span class="tile-label">Sports</span>
       </button>
       <button class="cat-tile" data-cat="Drama" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5 C3 5.5 5 4 7.5 4 C10 4 12 5.5 12 7.5 L12 10.5 C12 12.5 10 14 7.5 14 C5 14 3 12.5 3 10.5 Z"/><path d="M6 10.5 Q7.5 12.5 9 10.5"/><path d="M12 10 C12 8 14 6.5 16.5 6.5 C19 6.5 21 8 21 10 L21 13 C21 15 19 16.5 16.5 16.5 C14 16.5 12 15 12 13 Z"/><path d="M14.5 14 Q16.5 12 18.5 14"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Drama</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5C3 5.5 5 4 7.5 4C10 4 12 5.5 12 7.5L12 10.5C12 12.5 10 14 7.5 14C5 14 3 12.5 3 10.5Z"/><path d="M6 10.5Q7.5 12.5 9 10.5"/><path d="M12 10C12 8 14 6.5 16.5 6.5C19 6.5 21 8 21 10L21 13C21 15 19 16.5 16.5 16.5C14 16.5 12 15 12 13Z"/><path d="M14.5 14Q16.5 12 18.5 14"/></svg></div>
+        <span class="tile-label">Drama</span>
       </button>
       <button class="cat-tile" data-cat="Dance" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="2"/><path d="M14 6.5 L12 13"/><path d="M12 9 L7.5 7"/><path d="M12 9 L15.5 11.5"/><path d="M12 13 L8 19.5"/><path d="M12 13 L17 18"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Dance</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="2"/><path d="M14 6.5L12 13"/><path d="M12 9L7.5 7"/><path d="M12 9L15.5 11.5"/><path d="M12 13L8 19.5"/><path d="M12 13L17 18"/></svg></div>
+        <span class="tile-label">Dance</span>
       </button>
       <button class="cat-tile" data-cat="Learning" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5 C4 18 5.5 17 7 17 L20 17"/><path d="M7 3 L20 3 L20 21 L7 21 C5.5 21 4 20 4 18.5 L4 5.5 C4 4 5.5 3 7 3 Z"/><line x1="4" y1="17" x2="20" y2="17"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="14" x2="13" y2="14"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Learning</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5C4 18 5.5 17 7 17L20 17"/><path d="M7 3L20 3L20 21L7 21C5.5 21 4 20 4 18.5L4 5.5C4 4 5.5 3 7 3Z"/><line x1="4" y1="17" x2="20" y2="17"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="14" x2="13" y2="14"/></svg></div>
+        <span class="tile-label">Learning</span>
       </button>
       <button class="cat-tile" data-cat="General" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.5"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/><path d="M12 6 L13.5 12 L12 10.5 L10.5 12 Z"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Activity Camp</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <span class="tile-label">Activity Camp</span>
       </button>
       <button class="cat-tile" data-cat="Creative" onclick="toggleCat(this)">
-        <div class="tile-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3 L21 7 L8 20 L3 21 L4 16 Z"/><line x1="14" y1="6" x2="18" y2="10"/><path d="M3 21 C4 18 6 17 8 20"/></svg></div>
-        <div class="tile-accent-bar"></div><span class="tile-label">Creative</span>
+        <div class="tile-icon-box"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3L21 7L8 20L3 21L4 16Z"/><line x1="14" y1="6" x2="18" y2="10"/><path d="M3 21C4 18 6 17 8 20"/></svg></div>
+        <span class="tile-label">Creative</span>
       </button>
     </div>
     <div class="cat-all-row">
@@ -177,168 +262,155 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
 
-  <!-- STEP 2: DISTANCE -->
+  <!-- STEP 2: WHERE + DISTANCE (combined) -->
   <div class="step-block">
-    <div class="step-label"><span class="step-num">2</span>Search within…</div>
-    <div class="dist-row">
-      <label class="dist-chip"><input type="radio" name="dist" value="5"><span>5 miles</span></label>
-      <label class="dist-chip"><input type="radio" name="dist" value="10"><span>10 miles</span></label>
-      <label class="dist-chip"><input type="radio" name="dist" value="20"><span>20 miles</span></label>
-      <label class="dist-chip"><input type="radio" name="dist" value="0"><span>Any distance</span></label>
+    <div class="step-label"><span class="step-num">2</span>Where &amp; how far?</div>
+    <div class="where-row">
+      <input class="loc-input" id="areaInput" type="text" list="areaList" placeholder="Town, school name or postcode" autocomplete="off">
+      <select class="dist-select" id="distSelect">
+        <option value="5">Within 5 mi</option>
+        <option value="10" selected>Within 10 mi</option>
+        <option value="20">Within 20 mi</option>
+        <option value="0">Any distance</option>
+      </select>
     </div>
-  </div>
-
-  <!-- STEP 3: LOCATION -->
-  <div class="step-block">
-    <div class="step-label"><span class="step-num">3</span>…of where?</div>
-    <p style="font-size:.72rem;color:#bbb;margin-bottom:10px;line-height:1.5">Enter a town, school name or postcode — this will be the centre of your search.</p>
     <datalist id="areaList">
-      <option value="Guildford"><option value="Woking"><option value="Farnham"><option value="Dorking">
-      <option value="Leatherhead"><option value="Epsom"><option value="Cobham"><option value="Godalming">
-      <option value="Middlesbrough"><option value="Stockton-on-Tees"><option value="Redcar"><option value="Yarm">
-      <option value="St Matthew's School, Cobham"><option value="George Abbot School, Guildford">
-      <option value="Royal Grammar School, Guildford"><option value="Guildford High School">
-      <option value="Charterhouse, Godalming"><option value="Woking College">
-      <option value="Acklam Grange School"><option value="Conyers School, Yarm">
-      <option value="Egglescliffe School"><option value="Teesside High School">
+      <option value="Guildford">
+      <option value="Woking">
+      <option value="Cobham">
+      <option value="Epsom">
+      <option value="Middlesbrough">
+      <option value="Stockton">
+      <option value="Redcar">
     </datalist>
-    <div class="loc-row">
-      <input class="loc-input" id="areaInput" type="text" list="areaList" placeholder="Town or school name" autocomplete="off">
-      <span class="loc-or">or</span>
-      <input class="loc-input" id="postcodeInput" type="text" placeholder="Postcode" maxlength="8" style="text-transform:uppercase">
-    </div>
-    <div class="quick-areas">
-      <button class="qa-btn" onclick="setArea('Guildford','GU1 3JA',this)">Guildford</button>
-      <button class="qa-btn" onclick="setArea('Woking','GU21 6BJ',this)">Woking</button>
-      <button class="qa-btn" onclick="setArea('Cobham','KT11 1AB',this)">Cobham</button>
-      <button class="qa-btn" onclick="setArea('Epsom','KT17 4QJ',this)">Epsom</button>
-      <button class="qa-btn" onclick="setArea('Middlesbrough','TS1 3LW',this)">Middlesbrough</button>
-      <button class="qa-btn" onclick="setArea('Stockton-on-Tees','TS18 1AT',this)">Stockton</button>
-      <button class="qa-btn" onclick="setArea('Redcar','TS10 1AN',this)">Redcar</button>
+    <div class="quick-chips">
+      <button class="quick-chip" onclick="useLocation('Guildford',51.2362,-0.5704)">Guildford</button>
+      <button class="quick-chip" onclick="useLocation('Woking',51.3190,-0.5600)">Woking</button>
+      <button class="quick-chip" onclick="useLocation('Cobham',51.3281,-0.4099)">Cobham</button>
+      <button class="quick-chip" onclick="useLocation('Epsom',51.3355,-0.2694)">Epsom</button>
+      <button class="quick-chip" onclick="useLocation('Middlesbrough',54.5741,-1.2346)">Middlesbrough</button>
+      <button class="quick-chip" onclick="useLocation('Stockton',54.5704,-1.3192)">Stockton</button>
+      <button class="quick-chip" onclick="useLocation('Redcar',54.6142,-1.0649)">Redcar</button>
     </div>
   </div>
 
-  <!-- STEP 4: REFINE (OPTIONAL) -->
+  <!-- STEP 3: NARROW IT DOWN -->
   <div class="step-block">
-    <div class="step-label"><span class="step-num">4</span>Narrow it down <span style="font-size:.65rem;opacity:.45;font-weight:400;letter-spacing:0;text-transform:none;margin-left:4px">(optional)</span></div>
-    <div class="filter-icon-strip" id="filtIconStrip">
-      <button class="filt-btn" id="fbAge" onclick="openPanel('age',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/><line x1="17" y1="5" x2="19" y2="3"/><line x1="19" y1="3" x2="21" y2="5"/></svg>
-        <span class="filt-label">Age</span>
+    <div class="step-label"><span class="step-num">3</span>Narrow it down <span style="font-size:.7rem;opacity:.6;text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
+    <div class="filt-bar">
+      <button class="filt-btn" id="filt-age-btn" onclick="togglePanel('filt-age')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+        Age <span class="filt-chevron">▼</span>
       </button>
-      <button class="filt-btn" id="fbGender" onclick="openPanel('gender',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6"/><circle cx="16" cy="8" r="3.5"/><path d="M21 20c0-3.3-2.7-6-6-6"/><path d="M9.5 20h5"/></svg>
-        <span class="filt-label">Gender</span>
+      <button class="filt-btn" id="filt-gender-btn" onclick="togglePanel('filt-gender')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M5 20v-2a4 4 0 018 0v2"/></svg>
+        Gender <span class="filt-chevron">▼</span>
       </button>
-      <button class="filt-btn" id="fbSession" onclick="openPanel('session',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/></svg>
-        <span class="filt-label">Session</span>
+      <button class="filt-btn" id="filt-session-btn" onclick="togglePanel('filt-session')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        Session <span class="filt-chevron">▼</span>
       </button>
-      <button class="filt-btn" id="fbWhen" onclick="openPanel('when',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="14" x2="8" y2="14" stroke-width="2.5"/><line x1="12" y1="14" x2="12" y2="14" stroke-width="2.5"/><line x1="16" y1="14" x2="16" y2="14" stroke-width="2.5"/></svg>
-        <span class="filt-label">When</span>
+      <button class="filt-btn" id="filt-when-btn" onclick="togglePanel('filt-when')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        When <span class="filt-chevron">▼</span>
       </button>
-      <button class="filt-btn" id="fbPrice" onclick="openPanel('price',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a4 4 0 0 0-6.5 3c0 2 1.5 3 3.5 3h1a2.5 2.5 0 0 1 0 5H9"/><line x1="12" y1="7" x2="12" y2="9.5"/><line x1="12" y1="20.5" x2="12" y2="17"/></svg>
-        <span class="filt-label">Price</span>
+      <button class="filt-btn" id="filt-price-btn" onclick="togglePanel('filt-price')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9H10a2 2 0 000 4h4a2 2 0 010 4H9.5"/><line x1="12" y1="7" x2="12" y2="17"/></svg>
+        Price <span class="filt-chevron">▼</span>
       </button>
-      <button class="filt-btn" id="fbRating" onclick="openPanel('rating',this)">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-        <span class="filt-label">Rating</span>
+      <button class="filt-btn" id="filt-rating-btn" onclick="togglePanel('filt-rating')">
+        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Rating <span class="filt-chevron">▼</span>
       </button>
     </div>
 
-    <div class="filter-panels" id="filterPanels">
-      <!-- AGE -->
-      <div class="filt-panel" id="panel-age">
-        <div class="panel-title">Age / School year</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="age" value="rec-y2"><span>Reception – Y2</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="age" value="y3-y6"><span>Y3 – Y6</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="age" value="y7-y9"><span>Y7 – Y9</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="age" value="y10-y11"><span>Y10 – Y11</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="age" value="sixth"><span>Sixth Form</span></label>
-        </div>
-      </div>
-      <!-- GENDER -->
-      <div class="filt-panel" id="panel-gender">
-        <div class="panel-title">Gender</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="gender" value="Mixed"><span>Mixed</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="gender" value="Boys"><span>Boys</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="gender" value="Girls"><span>Girls</span></label>
-        </div>
-      </div>
-      <!-- SESSION -->
-      <div class="filt-panel" id="panel-session">
-        <div class="panel-title">Session type</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="session" value="Half day"><span>Half day</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="session" value="Full day"><span>Full day</span></label>
-        </div>
-      </div>
-      <!-- WHEN -->
-      <div class="filt-panel" id="panel-when">
-        <div class="panel-title">Day type</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="when" value="weekdays"><span>Weekdays</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="when" value="weekends"><span>Weekends</span></label>
-        </div>
-        <div class="panel-divider"></div>
-        <div class="panel-title">Specific dates</div>
-        <div class="date-range-row">
-          <div class="date-field">
-            <span class="date-label">From</span>
-            <input type="date" id="dateFrom" class="date-input" onchange="onDateChange()">
-          </div>
-          <div class="date-sep">→</div>
-          <div class="date-field">
-            <span class="date-label">To</span>
-            <input type="date" id="dateTo" class="date-input" onchange="onDateChange()">
-          </div>
-        </div>
-        <p class="date-hint">Dates auto-filter by weekday / weekend. <button class="date-clear" id="dateClearBtn" onclick="clearDates()">Clear dates</button></p>
-      </div>
-      <!-- PRICE -->
-      <div class="filt-panel" id="panel-price">
-        <div class="panel-title">Full day price</div>
-        <div class="chip-row" style="margin-bottom:10px">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceF" value="1"><span>Under £30</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceF" value="2"><span>£30–£50</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceF" value="3"><span>£50–£75</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceF" value="4"><span>£75+</span></label>
-        </div>
-        <div class="panel-title">Half day price</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="1"><span>Under £15</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="2"><span>£15–£25</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="3"><span>£25–£35</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="checkbox" name="priceH" value="4"><span>£35+</span></label>
-        </div>
-        <!-- RATING -->
-      <div class="filt-panel" id="panel-rating">
-        <div class="panel-title">Minimum rating</div>
-        <div class="chip-row">
-          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4"><span>4+ ⭐</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4.5"><span>4.5+ ⭐</span></label>
-          <label class="chip" onclick="onChipChange()"><input type="radio" name="rating" value="4.8"><span>4.8+ ⭐</span></label>
-        </div>
+    <!-- AGE PANEL -->
+    <div class="filt-panel" id="filt-age">
+      <div class="filt-panel-title">Age / School year</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="age" value="4-7" onchange="onChipChange()"><span class="chip">Reception &ndash; Y2</span></label>
+        <label class="chip-label"><input type="checkbox" name="age" value="7-11" onchange="onChipChange()"><span class="chip">Y3 &ndash; Y6</span></label>
+        <label class="chip-label"><input type="checkbox" name="age" value="11-14" onchange="onChipChange()"><span class="chip">Y7 &ndash; Y9</span></label>
+        <label class="chip-label"><input type="checkbox" name="age" value="14-16" onchange="onChipChange()"><span class="chip">Y10 &ndash; Y11</span></label>
+        <label class="chip-label"><input type="checkbox" name="age" value="16-18" onchange="onChipChange()"><span class="chip">Sixth Form</span></label>
       </div>
     </div>
 
-    <!-- FRIENDLY TIP -->
-    <div class="search-tip" id="searchTip">
-      💡 <strong>Did you know?</strong> Tap any filter above to narrow down your results — age, gender, price and more. Or just hit Search and see everything near you!
+    <!-- GENDER PANEL -->
+    <div class="filt-panel" id="filt-gender">
+      <div class="filt-panel-title">Gender</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="gender" value="Mixed" onchange="onChipChange()"><span class="chip">Mixed</span></label>
+        <label class="chip-label"><input type="checkbox" name="gender" value="Boys" onchange="onChipChange()"><span class="chip">Boys</span></label>
+        <label class="chip-label"><input type="checkbox" name="gender" value="Girls" onchange="onChipChange()"><span class="chip">Girls</span></label>
+      </div>
+    </div>
+
+    <!-- SESSION PANEL -->
+    <div class="filt-panel" id="filt-session">
+      <div class="filt-panel-title">Session type</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="session" value="Half day" onchange="onChipChange()"><span class="chip">Half day</span></label>
+        <label class="chip-label"><input type="checkbox" name="session" value="Full day" onchange="onChipChange()"><span class="chip">Full day</span></label>
+      </div>
+      <div class="filt-panel-title" style="margin-top:8px">Day type</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="daytype" value="weekdays" onchange="onChipChange()"><span class="chip">Weekdays</span></label>
+        <label class="chip-label"><input type="checkbox" name="daytype" value="weekends" onchange="onChipChange()"><span class="chip">Weekends</span></label>
+      </div>
+      <div class="filt-panel-title" style="margin-top:8px">Specific dates</div>
+      <div class="date-row">
+        <span style="font-size:.82rem;color:var(--text-mid)">From</span>
+        <input class="date-input" type="date" id="dateFrom" onchange="onDateChange()">
+        <span style="font-size:.82rem;color:var(--text-mid)">&ndash;</span>
+        <input class="date-input" type="date" id="dateTo" onchange="onDateChange()">
+        <button class="date-clear-btn" id="dateClearBtn" onclick="clearDates()">Clear dates</button>
+      </div>
+      <div class="date-note">Dates auto-filter by weekday / weekend.</div>
+    </div>
+
+    <!-- PRICE PANEL -->
+    <div class="filt-panel" id="filt-price">
+      <div class="filt-panel-title">Full day price</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="priceF" value="0-30" onchange="onChipChange()"><span class="chip">Under &pound;30</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceF" value="30-50" onchange="onChipChange()"><span class="chip">&pound;30&ndash;&pound;50</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceF" value="50-75" onchange="onChipChange()"><span class="chip">&pound;50&ndash;&pound;75</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceF" value="75-999" onchange="onChipChange()"><span class="chip">&pound;75+</span></label>
+      </div>
+      <div class="filt-panel-title" style="margin-top:8px">Half day price</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="checkbox" name="priceH" value="0-15" onchange="onChipChange()"><span class="chip">Under &pound;15</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceH" value="15-25" onchange="onChipChange()"><span class="chip">&pound;15&ndash;&pound;25</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceH" value="25-35" onchange="onChipChange()"><span class="chip">&pound;25&ndash;&pound;35</span></label>
+        <label class="chip-label"><input type="checkbox" name="priceH" value="35-999" onchange="onChipChange()"><span class="chip">&pound;35+</span></label>
+      </div>
+    </div>
+
+    <!-- RATING PANEL -->
+    <div class="filt-panel" id="filt-rating">
+      <div class="filt-panel-title">Minimum rating</div>
+      <div class="filt-chips">
+        <label class="chip-label"><input type="radio" name="rating" value="4" onchange="onChipChange()"><span class="chip">4&#9733; and above</span></label>
+        <label class="chip-label"><input type="radio" name="rating" value="4.5" onchange="onChipChange()"><span class="chip">4.5&#9733; and above</span></label>
+        <label class="chip-label"><input type="radio" name="rating" value="4.8" onchange="onChipChange()"><span class="chip">4.8&#9733; and above</span></label>
+      </div>
     </div>
   </div>
 
-  <button class="search-btn" onclick="runSearch()">🔍 Search</button>
-</div>
+  <div class="search-btn-wrap">
+    <button class="search-btn" id="searchBtn" onclick="runSearch()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search
+    </button>
+  </div>
+
+</div><!-- /hero-inner -->
 </header>
 
 <div id="results" class="results-section" style="display:none"></div>
 
-<script>
+<script type="text/javascript">
 const P=[
 {id:1,name:"Surrey Sports Academy",cat:"Sports",desc:"Multi-sport holiday camps covering football, tennis, athletics and swimming. Fully qualified coaches, all DBS checked.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:25,priceFull:45,weekdays:true,weekends:false,insured:true,founded:2009,addr:"Stoke Road",town:"Guildford",postcode:"GU1 3JA",web:"surreysporsacademy.co.uk",phone:"01483 445566",email:"info@surreysporsacademy.co.uk",rP:4.8,rPN:124,rK:4.9,rKN:89,lat:51.2362,lng:-0.5704},
 {id:2,name:"Woking Warriors FC Camp",cat:"Sports",desc:"Intensive football development run by UEFA-licensed coaches. Technique, tactics and match play across the week.",ageMin:6,ageMax:16,gender:"Boys",sessions:["Full day"],priceHalf:null,priceFull:40,weekdays:true,weekends:true,insured:true,founded:2014,addr:"Woking Park, Kingfield Road",town:"Woking",postcode:"GU21 6BJ",web:"wokingwarriors.co.uk",phone:"01483 778899",email:"camps@wokingwarriors.co.uk",rP:4.7,rPN:88,rK:4.8,rKN:74,lat:51.3190,lng:-0.5600},
@@ -357,287 +429,356 @@ const P=[
 {id:15,name:"Surrey Adventure Camp",cat:"General",desc:"Bushcraft, archery, orienteering and low-ropes in a stunning Surrey woodland setting.",ageMin:8,ageMax:15,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:50,weekdays:true,weekends:false,insured:true,founded:2012,addr:"Horsham Road",town:"Dorking",postcode:"RH4 2JP",web:"surreyadventurecamp.co.uk",phone:"01306 556677",email:"hello@surreyadventurecamp.co.uk",rP:4.8,rPN:97,rK:5.0,rKN:82,lat:51.2329,lng:-0.3341},
 {id:16,name:"Guildford Kids Camp",cat:"General",desc:"The original Guildford holiday camp. Swimming, arts, sports and games — something for everyone every day.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:22,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2003,addr:"Spectrum Leisure Complex, Parkway",town:"Guildford",postcode:"GU1 1UP",web:"guildfordkidscamp.co.uk",phone:"01483 778899",email:"camp@guildfordkidscamp.co.uk",rP:4.6,rPN:289,rK:4.7,rKN:234,lat:51.2362,lng:-0.5704},
 {id:17,name:"Active Holidays Surrey",cat:"General",desc:"Trampolining, gymnastics, multi-sport and team challenges. Half or full day to suit your schedule.",ageMin:5,ageMax:13,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:20,priceFull:35,weekdays:true,weekends:false,insured:true,founded:2014,addr:"Woking Leisure Centre, Woking Park",town:"Woking",postcode:"GU22 9BA",web:"activeholidayssurrey.co.uk",phone:"01483 223344",email:"info@activeholidayssurrey.co.uk",rP:4.5,rPN:112,rK:4.8,rKN:89,lat:51.3190,lng:-0.5600},
-{id:18,name:"Creative Kids Camp",cat:"Creative",desc:"Painting, sculpture and mixed-media art in a fully equipped studio. Children take home their creations.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day"],priceHalf:18,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2011,addr:"Church Street",town:"Epsom",postcode:"KT17 4QB",web:"creativekidscamp.co.uk",phone:"01372 445566",email:"create@creativekidscamp.co.uk",rP:4.7,rPN:74,rK:4.8,rKN:61,lat:51.3355,lng:-0.2694},
-{id:19,name:"Surrey Young Artists",cat:"Creative",desc:"Drawing, illustration and digital art. Explore different styles and build a portfolio across the week.",ageMin:7,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:20,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2016,addr:"Woodbridge Road",town:"Guildford",postcode:"GU1 4RF",web:"surreyyoungartists.co.uk",phone:"01483 334455",email:"art@surreyyoungartists.co.uk",rP:4.6,rPN:51,rK:4.7,rKN:44,lat:51.2362,lng:-0.5704},
-{id:20,name:"Craft & Create Studio",cat:"Creative",desc:"Pottery, jewellery and textile art for older children. All materials included. Take-home project every session.",ageMin:8,ageMax:16,gender:"Girls",sessions:["Half day"],priceHalf:22,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2013,addr:"West Street",town:"Farnham",postcode:"GU9 7EQ",web:"craftandcreate.co.uk",phone:"01252 556677",email:"craft@craftandcreate.co.uk",rP:4.8,rPN:66,rK:4.6,rKN:58,lat:51.2143,lng:-0.7981},
-{id:21,name:"Teesside Football Academy",cat:"Sports",desc:"Professional-standard football development camp affiliated to a local FC academy. Coaching from former semi-pros.",ageMin:6,ageMax:16,gender:"Boys",sessions:["Full day"],priceHalf:null,priceFull:35,weekdays:true,weekends:true,insured:true,founded:2008,addr:"Rockliffe Park, Hurworth",town:"Middlesbrough",postcode:"TS1 3LW",web:"teessidefa.co.uk",phone:"01642 112233",email:"info@teessidefa.co.uk",rP:4.7,rPN:103,rK:4.9,rKN:87,lat:54.5742,lng:-1.2350},
-{id:22,name:"Redcar Beach Sports Camp",cat:"Sports",desc:"Multi-sport on the Redcar seafront. Beach volleyball, football, rounders and athletics in a stunning outdoor setting.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:30,weekdays:true,weekends:false,insured:true,founded:2015,addr:"The Esplanade",town:"Redcar",postcode:"TS10 1AN",web:"redcarsports.co.uk",phone:"01642 334455",email:"info@redcarsports.co.uk",rP:4.8,rPN:77,rK:4.9,rKN:62,lat:54.6109,lng:-1.0667},
-{id:23,name:"Stockton Swim Academy",cat:"Sports",desc:"Stroke improvement and water confidence for all levels. Qualified ASA instructors. Max 8 per group.",ageMin:7,ageMax:15,gender:"Mixed",sessions:["Half day"],priceHalf:15,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2012,addr:"Splash Leisure Pool, Northcroft",town:"Stockton-on-Tees",postcode:"TS18 3JS",web:"stocktonswim.co.uk",phone:"01642 556677",email:"swim@stocktonswim.co.uk",rP:4.6,rPN:58,rK:4.5,rKN:42,lat:54.5680,lng:-1.3174},
-{id:24,name:"Tees Active Junior Sports",cat:"Sports",desc:"Football, basketball, badminton and athletics in a modern leisure centre. Run by qualified PE teachers.",ageMin:8,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:32,weekdays:true,weekends:false,insured:true,founded:2013,addr:"Marton Road",town:"Middlesbrough",postcode:"TS4 3BT",web:"teesactivejunior.co.uk",phone:"01642 778899",email:"info@teesactivejunior.co.uk",rP:4.5,rPN:89,rK:4.7,rKN:71,lat:54.5742,lng:-1.2350},
-{id:25,name:"Teesside Drama Workshop",cat:"Drama",desc:"Character development, improvisation and devised theatre. A supportive environment for children who love performing.",ageMin:8,ageMax:16,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:35,weekdays:true,weekends:false,insured:true,founded:2010,addr:"Corporation Road",town:"Middlesbrough",postcode:"TS1 2RW",web:"teessidedrama.co.uk",phone:"01642 223344",email:"drama@teessidedrama.co.uk",rP:4.7,rPN:68,rK:4.8,rKN:55,lat:54.5742,lng:-1.2350},
-{id:26,name:"Tees Musical Theatre",cat:"Drama",desc:"Singing, acting and dance combined in a musical theatre programme. Friday showcase for parents.",ageMin:6,ageMax:14,gender:"Girls",sessions:["Half day"],priceHalf:18,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2011,addr:"High Street",town:"Stockton-on-Tees",postcode:"TS18 1AT",web:"teesmusicaltheatre.co.uk",phone:"01642 445566",email:"info@teesmusicaltheatre.co.uk",rP:4.8,rPN:92,rK:4.9,rKN:74,lat:54.5680,lng:-1.3174},
-{id:27,name:"North East Screen Academy",cat:"Drama",desc:"Film acting, script writing and camera technique for older teens. Industry professionals lead workshops.",ageMin:12,ageMax:17,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:45,weekdays:true,weekends:false,insured:true,founded:2019,addr:"Linthorpe Road",town:"Middlesbrough",postcode:"TS1 5AF",web:"northeastscreen.co.uk",phone:"01642 667788",email:"hello@northeastscreen.co.uk",rP:4.9,rPN:31,rK:4.8,rKN:26,lat:54.5742,lng:-1.2350},
-{id:28,name:"Middlesbrough Dance Academy",cat:"Dance",desc:"Classical ballet and contemporary in a friendly professional studio. ISTD-affiliated teaching.",ageMin:5,ageMax:14,gender:"Girls",sessions:["Half day"],priceHalf:15,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2006,addr:"Acklam Road",town:"Middlesbrough",postcode:"TS5 7HF",web:"mbrodance.co.uk",phone:"01642 889900",email:"dance@mbrodance.co.uk",rP:4.8,rPN:144,rK:4.7,rKN:122,lat:54.5742,lng:-1.2350},
-{id:29,name:"Tees Street Dance",cat:"Dance",desc:"Hip-hop, breakdance and freestyle. Energetic sessions for kids who love to move. No experience needed.",ageMin:8,ageMax:16,gender:"Mixed",sessions:["Half day"],priceHalf:12,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2016,addr:"Norton Road",town:"Stockton-on-Tees",postcode:"TS18 2AB",web:"teesstreetdance.co.uk",phone:"01642 334455",email:"move@teesstreetdance.co.uk",rP:4.6,rPN:79,rK:5.0,rKN:63,lat:54.5680,lng:-1.3174},
-{id:30,name:"Redcar Dance School",cat:"Dance",desc:"Jazz, tap and contemporary in a well-equipped seaside studio. Mix of technique and performance throughout.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:14,priceFull:26,weekdays:true,weekends:true,insured:true,founded:2009,addr:"High Street",town:"Redcar",postcode:"TS10 3BU",web:"redcardance.co.uk",phone:"01642 556677",email:"info@redcardance.co.uk",rP:4.7,rPN:96,rK:4.8,rKN:78,lat:54.6109,lng:-1.0667},
-{id:31,name:"Code North East",cat:"Learning",desc:"Fun coding camps — Python, Scratch and game design. Kids leave with games they built themselves.",ageMin:8,ageMax:15,gender:"Mixed",sessions:["Half day"],priceHalf:20,priceFull:null,weekdays:true,weekends:false,insured:true,founded:2018,addr:"Southfield Road",town:"Middlesbrough",postcode:"TS1 5EP",web:"codenortheast.co.uk",phone:"01642 112233",email:"code@codenortheast.co.uk",rP:4.6,rPN:54,rK:4.7,rKN:43,lat:54.5742,lng:-1.2350},
-{id:32,name:"Tees STEM Academy",cat:"Learning",desc:"Robotics, coding and science experiments. Hands-on STEM learning with qualified engineers and scientists.",ageMin:9,ageMax:15,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:42,weekdays:true,weekends:false,insured:true,founded:2016,addr:"Church Road",town:"Stockton-on-Tees",postcode:"TS18 1TW",web:"teesSTEM.co.uk",phone:"01642 334455",email:"learn@teesSTEM.co.uk",rP:4.7,rPN:48,rK:4.8,rKN:39,lat:54.5680,lng:-1.3174},
-{id:33,name:"Yarm Tech Club",cat:"Learning",desc:"AI basics, digital skills and creative technology. Small group sessions in Yarm village centre.",ageMin:10,ageMax:16,gender:"Mixed",sessions:["Half day"],priceHalf:22,priceFull:null,weekdays:true,weekends:false,insured:true,founded:2021,addr:"High Street",town:"Yarm",postcode:"TS15 9AH",web:"yarmtech.co.uk",phone:"01642 556677",email:"info@yarmtech.co.uk",rP:4.5,rPN:22,rK:4.7,rKN:18,lat:54.5054,lng:-1.3480},
-{id:34,name:"Tees Valley Adventure Camp",cat:"General",desc:"Climbing, team challenges, orienteering and problem-solving. Qualified instructors, full safety briefings.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:33,weekdays:true,weekends:false,insured:true,founded:2011,addr:"Park Lane",town:"Middlesbrough",postcode:"TS3 6PY",web:"teesvalleyadventure.co.uk",phone:"01642 778899",email:"camp@teesvalleyadventure.co.uk",rP:4.7,rPN:118,rK:4.9,rKN:96,lat:54.5742,lng:-1.2350},
-{id:35,name:"Redcar Beach Activity Camp",cat:"General",desc:"Outdoor adventures at Redcar beach — surfing tasters, beach games, sandcastle engineering and nature trails.",ageMin:8,ageMax:15,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2014,addr:"Majuba Road, Seafront",town:"Redcar",postcode:"TS10 3AH",web:"redcarbeachcamp.co.uk",phone:"01642 223344",email:"beach@redcarbeachcamp.co.uk",rP:4.9,rPN:86,rK:5.0,rKN:70,lat:54.6109,lng:-1.0667},
-{id:36,name:"Stockton All Stars Camp",cat:"General",desc:"Trampolining, gymnastics, dodgeball and team sports in Stockton's largest sports hall. Great value.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:16,priceFull:28,weekdays:true,weekends:false,insured:true,founded:2012,addr:"Bishopton Road West",town:"Stockton-on-Tees",postcode:"TS19 0AA",web:"stocktonallstars.co.uk",phone:"01642 445566",email:"info@stocktonallstars.co.uk",rP:4.5,rPN:134,rK:4.8,rKN:107,lat:54.5680,lng:-1.3174},
-{id:37,name:"Tees Summer Club",cat:"General",desc:"A fantastic mix of arts, sports and crafts under one roof. Perfect for children who want variety.",ageMin:5,ageMax:13,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:18,priceFull:28,weekdays:true,weekends:false,insured:true,founded:2009,addr:"Park Vale Road",town:"Middlesbrough",postcode:"TS6 0DU",web:"teessummerclub.co.uk",phone:"01642 667788",email:"hello@teessummerclub.co.uk",rP:4.6,rPN:167,rK:4.8,rKN:139,lat:54.5742,lng:-1.2350},
-{id:38,name:"Teesside Young Artists",cat:"Creative",desc:"Painting, drawing, mixed media and printmaking in a purpose-built art studio. All materials provided.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:15,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2013,addr:"Linthorpe Road",town:"Middlesbrough",postcode:"TS1 3QT",web:"teessideartists.co.uk",phone:"01642 889900",email:"art@teessideartists.co.uk",rP:4.7,rPN:63,rK:4.8,rKN:51,lat:54.5742,lng:-1.2350},
-{id:39,name:"Craft House Stockton",cat:"Creative",desc:"Pottery, sculpture and textile art in a relaxed, creative studio. Children work at their own pace.",ageMin:7,ageMax:15,gender:"Girls",sessions:["Half day"],priceHalf:16,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2015,addr:"High Street",town:"Stockton-on-Tees",postcode:"TS18 1LD",web:"crafthousestockton.co.uk",phone:"01642 334455",email:"craft@crafthousestockton.co.uk",rP:4.8,rPN:47,rK:4.6,rKN:39,lat:54.5680,lng:-1.3174},
-{id:40,name:"Create & Explore Redcar",cat:"Creative",desc:"Crafts, jewellery making, slime science and upcycling. Bright, noisy, fun — perfect for curious younger kids.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day"],priceHalf:12,priceFull:null,weekdays:true,weekends:false,insured:true,founded:2017,addr:"Station Road",town:"Redcar",postcode:"TS10 1RD",web:"createexplore.co.uk",phone:"01642 556677",email:"create@createexplore.co.uk",rP:4.6,rPN:55,rK:4.9,rKN:44,lat:54.6109,lng:-1.0667},
+{id:18,name:"Leatherhead Leisure Camp",cat:"General",desc:"Fun packed days including swimming, trampolining and arts and crafts. Great value, great staff.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:18,priceFull:32,weekdays:true,weekends:false,insured:true,founded:2008,addr:"Guildford Road",town:"Leatherhead",postcode:"KT22 9BT",web:"leatherheadleisure.co.uk",phone:"01372 556677",email:"camp@leatherheadleisure.co.uk",rP:4.4,rPN:88,rK:4.6,rKN:71,lat:51.2952,lng:-0.3276},
+{id:19,name:"Cobham Cricket Academy",cat:"Sports",desc:"Structured cricket coaching for all abilities. Batting, bowling and fielding clinics with professional coaches.",ageMin:8,ageMax:16,gender:"Boys",sessions:["Half day"],priceHalf:24,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2010,addr:"Old Street Hill",town:"Cobham",postcode:"KT11 2AF",web:"cobhamcricket.co.uk",phone:"01932 445566",email:"junior@cobhamcricket.co.uk",rP:4.7,rPN:52,rK:4.8,rKN:44,lat:51.3281,lng:-0.4099},
+{id:20,name:"Epsom Gymnastics Club",cat:"Sports",desc:"Recreational and artistic gymnastics. All levels welcome, qualified British Gymnastics coaches.",ageMin:4,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:20,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2006,addr:"Ashley Road",town:"Epsom",postcode:"KT18 5BS",web:"epsomgym.co.uk",phone:"01372 778899",email:"info@epsomgym.co.uk",rP:4.8,rPN:134,rK:4.9,rKN:112,lat:51.3355,lng:-0.2694},
+{id:21,name:"Middlesbrough FC Foundation Camp",cat:"Sports",desc:"Official Middlesbrough FC holiday camp. Coached by FA-qualified staff in the MFC way.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2005,addr:"Riverside Stadium, Middlesbrough",town:"Middlesbrough",postcode:"TS3 6RS",web:"mfcfoundation.co.uk",phone:"01642 334455",email:"camps@mfcfoundation.co.uk",rP:4.8,rPN:267,rK:4.9,rKN:198,lat:54.5741,lng:-1.2346},
+{id:22,name:"Teesside Gymnastics Centre",cat:"Sports",desc:"Recreational gymnastics, acrobatics and trampolining. All ages and abilities, friendly qualified coaches.",ageMin:4,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:18,priceFull:32,weekdays:true,weekends:true,insured:true,founded:2003,addr:"Haverton Hill Road",town:"Stockton",postcode:"TS23 1PD",web:"teessidegymnastics.co.uk",phone:"01642 556677",email:"info@teessidegymnastics.co.uk",rP:4.7,rPN:189,rK:4.8,rKN:145,lat:54.5704,lng:-1.3192},
+{id:23,name:"Middlesbrough Drama Workshop",cat:"Drama",desc:"Fun and energetic drama sessions. Devising, performance and voice work in a purpose-built studio.",ageMin:7,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:16,priceFull:28,weekdays:true,weekends:false,insured:true,founded:2011,addr:"Corporation Road",town:"Middlesbrough",postcode:"TS1 2RL",web:"middramamworkshop.co.uk",phone:"01642 778899",email:"hello@middramamworkshop.co.uk",rP:4.6,rPN:74,rK:4.7,rKN:62,lat:54.5741,lng:-1.2346},
+{id:24,name:"Teesside Dance Academy",cat:"Dance",desc:"Contemporary, street and hip-hop dance. End-of-week showcase for parents and friends.",ageMin:6,ageMax:16,gender:"Mixed",sessions:["Half day"],priceHalf:15,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2013,addr:"Linthorpe Road",town:"Middlesbrough",postcode:"TS5 6AD",web:"teessidedance.co.uk",phone:"01642 223344",email:"info@teessidedance.co.uk",rP:4.8,rPN:113,rK:4.9,rKN:94,lat:54.5741,lng:-1.2346},
+{id:25,name:"Redcar Arts Camp",cat:"Creative",desc:"Visual arts, ceramics, printmaking and photography. Children leave with a portfolio of their best work.",ageMin:7,ageMax:15,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:16,priceFull:28,weekdays:true,weekends:false,insured:true,founded:2014,addr:"The Regent, Redcar",town:"Redcar",postcode:"TS10 3AF",web:"redcarartscamp.co.uk",phone:"01642 889900",email:"create@redcarartscamp.co.uk",rP:4.9,rPN:48,rK:4.8,rKN:41,lat:54.6142,lng:-1.0649},
+{id:26,name:"Stockton STEM Discovery",cat:"Learning",desc:"Science experiments, electronics and engineering challenges. Hands-on learning that sparks curiosity.",ageMin:8,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:40,weekdays:true,weekends:false,insured:true,founded:2018,addr:"High Street",town:"Stockton",postcode:"TS18 1AT",web:"stocktonstem.co.uk",phone:"01642 112233",email:"learn@stocktonstem.co.uk",rP:4.7,rPN:36,rK:4.8,rKN:29,lat:54.5704,lng:-1.3192},
+{id:27,name:"Middlesbrough Coding Dojo",cat:"Learning",desc:"Python, web development and game design for young coders. Project-based, collaborative learning.",ageMin:10,ageMax:17,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:45,weekdays:true,weekends:false,insured:true,founded:2019,addr:"Gilkes Street",town:"Middlesbrough",postcode:"TS1 5JL",web:"mbrodojo.co.uk",phone:"01642 334455",email:"hello@mbrodojo.co.uk",rP:4.8,rPN:22,rK:4.9,rKN:18,lat:54.5741,lng:-1.2346},
+{id:28,name:"Whitby Outdoor Adventure",cat:"General",desc:"Coasteering, kayaking and rock climbing on the stunning North Yorkshire coast. Full safety equipment provided.",ageMin:10,ageMax:17,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:55,weekdays:true,weekends:true,insured:true,founded:2009,addr:"Pier Road, Whitby",town:"Whitby",postcode:"YO21 3PU",web:"whitbyoutdoor.co.uk",phone:"01947 445566",email:"adventure@whitbyoutdoor.co.uk",rP:4.9,rPN:78,rK:5.0,rKN:64,lat:54.4844,lng:-0.6146},
+{id:29,name:"Darlington Art Studio",cat:"Creative",desc:"Painting, sculpture and mixed media in a professional artist's studio. All materials included.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:18,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2012,addr:"Tubwell Row",town:"Darlington",postcode:"DL1 1NP",web:"darlingtonartstudio.co.uk",phone:"01325 556677",email:"create@darlingtonartstudio.co.uk",rP:4.7,rPN:56,rK:4.6,rKN:48,lat:54.5236,lng:-1.5546},
+{id:30,name:"Hartlepool Multi-Sport Camp",cat:"Sports",desc:"Football, basketball, tennis and athletics run by qualified coaches. Great value camp for all abilities.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:30,weekdays:true,weekends:false,insured:true,founded:2011,addr:"Croft Terrace",town:"Hartlepool",postcode:"TS24 8AR",web:"hartlepoolsportcamp.co.uk",phone:"01429 667788",email:"info@hartlepoolsportcamp.co.uk",rP:4.5,rPN:92,rK:4.7,rKN:78,lat:54.6853,lng:-1.2089},
+{id:31,name:"Farnham Creative Arts Camp",cat:"Creative",desc:"Painting, printing and sculpting in a bright studio. Small group sizes mean individual attention.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day"],priceHalf:22,priceFull:null,weekdays:true,weekends:false,insured:true,founded:2016,addr:"East Street",town:"Farnham",postcode:"GU9 7SD",web:"farnhamcreativearts.co.uk",phone:"01252 445566",email:"art@farnhamcreativearts.co.uk",rP:4.8,rPN:38,rK:4.7,rKN:32,lat:51.2143,lng:-0.7981},
+{id:32,name:"Woking Creative Hub",cat:"Creative",desc:"Screen printing, ceramics and animation for curious young makers. Full materials provided.",ageMin:8,ageMax:15,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:20,priceFull:36,weekdays:true,weekends:false,insured:true,founded:2017,addr:"Commercial Way",town:"Woking",postcode:"GU21 6ET",web:"wokingcreativehub.co.uk",phone:"01483 667788",email:"make@wokingcreativehub.co.uk",rP:4.7,rPN:44,rK:4.8,rKN:37,lat:51.3190,lng:-0.5600},
+{id:33,name:"Dorking Ballet and Dance",cat:"Dance",desc:"Classical ballet and modern dance in a beautiful Victorian studio. Exam preparation and recreational classes.",ageMin:4,ageMax:16,gender:"Girls",sessions:["Half day"],priceHalf:18,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2004,addr:"South Street",town:"Dorking",postcode:"RH4 2HS",web:"dorkingballetdance.co.uk",phone:"01306 334455",email:"dance@dorkingballetdance.co.uk",rP:4.9,rPN:76,rK:4.8,rKN:64,lat:51.2329,lng:-0.3341},
+{id:34,name:"Leatherhead Drama Circle",cat:"Drama",desc:"Professional theatre techniques for young performers. Script analysis, characterisation and public performance.",ageMin:9,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:22,priceFull:40,weekdays:true,weekends:true,insured:true,founded:2008,addr:"Kingston Road",town:"Leatherhead",postcode:"KT22 7PB",web:"leatherheaddrama.co.uk",phone:"01372 889900",email:"perform@leatherheaddrama.co.uk",rP:4.8,rPN:62,rK:4.9,rKN:53,lat:51.2952,lng:-0.3276},
+{id:35,name:"Cobham Creative Workshop",cat:"Creative",desc:"Pottery, life drawing and watercolour painting in a fully-equipped studio. For budding young artists.",ageMin:7,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:24,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2015,addr:"Cedar Road",town:"Cobham",postcode:"KT11 2BQ",web:"cobhamcreative.co.uk",phone:"01932 556677",email:"studio@cobhamcreative.co.uk",rP:4.8,rPN:29,rK:4.7,rKN:25,lat:51.3281,lng:-0.4099},
+{id:36,name:"Epsom Drama Studio",cat:"Drama",desc:"Musical theatre, improvisation and Shakespeare for young performers. Evening showcase each Friday.",ageMin:8,ageMax:16,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:46,weekdays:true,weekends:false,insured:true,founded:2010,addr:"Upper High Street",town:"Epsom",postcode:"KT17 4QS",web:"epsomdrma.co.uk",phone:"01372 223344",email:"stage@epsomdrma.co.uk",rP:4.7,rPN:55,rK:4.8,rKN:47,lat:51.3355,lng:-0.2694},
+{id:37,name:"Guildford Learning Hub",cat:"Learning",desc:"Maths, English and science holiday workshops. Exam prep and enrichment for all abilities.",ageMin:7,ageMax:16,gender:"Mixed",sessions:["Half day"],priceHalf:22,priceFull:null,weekdays:true,weekends:false,insured:true,founded:2014,addr:"Friary Street",town:"Guildford",postcode:"GU1 4EH",web:"guildfordlearninghub.co.uk",phone:"01483 445566",email:"learn@guildfordlearninghub.co.uk",rP:4.6,rPN:84,rK:4.7,rKN:70,lat:51.2362,lng:-0.5704},
+{id:38,name:"Surrey Riding School",cat:"Sports",desc:"Pony rides and beginner rider lessons in a fully insured equestrian centre. BHS-qualified instructors.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:30,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2000,addr:"Albury Road",town:"Guildford",postcode:"GU5 9BQ",web:"surreyriding.co.uk",phone:"01483 889900",email:"ride@surreyriding.co.uk",rP:4.9,rPN:147,rK:5.0,rKN:128,lat:51.2362,lng:-0.5704},
+{id:39,name:"Woking Swimming Academy",cat:"Sports",desc:"Stroke improvement and water confidence sessions. Qualified ASA coaches, small groups.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:18,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2009,addr:"Pool in the Park, Woking Park",town:"Woking",postcode:"GU22 9BA",web:"wokingswimacademy.co.uk",phone:"01483 112233",email:"swim@wokingswimacademy.co.uk",rP:4.7,rPN:118,rK:4.8,rKN:97,lat:51.3190,lng:-0.5600},
+{id:40,name:"Guildford Music Academy",cat:"Creative",desc:"Guitar, piano, drums and music production for young musicians. End-of-week mini-concert.",ageMin:7,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:22,priceFull:40,weekdays:true,weekends:false,insured:true,founded:2011,addr:"Sydenham Road",town:"Guildford",postcode:"GU1 3RX",web:"guildfordmusicacademy.co.uk",phone:"01483 334455",email:"music@guildfordmusicacademy.co.uk",rP:4.8,rPN:93,rK:4.9,rKN:79,lat:51.2362,lng:-0.5704}
 ];
 
-const LOC=[
-  {k:['guildford'],lat:51.2362,lng:-0.5704,label:'Guildford'},
-  {k:['woking'],lat:51.3190,lng:-0.5600,label:'Woking'},
-  {k:['farnham'],lat:51.2143,lng:-0.7981,label:'Farnham'},
-  {k:['dorking'],lat:51.2329,lng:-0.3341,label:'Dorking'},
-  {k:['leatherhead'],lat:51.2952,lng:-0.3276,label:'Leatherhead'},
-  {k:['epsom'],lat:51.3355,lng:-0.2694,label:'Epsom'},
-  {k:['cobham'],lat:51.3327,lng:-0.4165,label:'Cobham'},
-  {k:['godalming'],lat:51.1855,lng:-0.6108,label:'Godalming'},
-  {k:['middlesbrough','middlesborough'],lat:54.5742,lng:-1.2350,label:'Middlesbrough'},
-  {k:['stockton'],lat:54.5680,lng:-1.3174,label:'Stockton-on-Tees'},
-  {k:['redcar'],lat:54.6109,lng:-1.0667,label:'Redcar'},
-  {k:['yarm'],lat:54.5054,lng:-1.3480,label:'Yarm'},
-  {k:["st matthew","matthews"],lat:51.3327,lng:-0.4165,label:"St Matthew's, Cobham"},
-  {k:['cobham free','notre dame'],lat:51.3327,lng:-0.4165,label:'Cobham'},
-  {k:["reed's","reeds school"],lat:51.3327,lng:-0.4165,label:"Reed's School, Cobham"},
-  {k:['george abbot'],lat:51.2362,lng:-0.5704,label:'George Abbot School, Guildford'},
-  {k:['royal grammar','rgs'],lat:51.2362,lng:-0.5704,label:'Royal Grammar School, Guildford'},
-  {k:['guildford high'],lat:51.2362,lng:-0.5704,label:'Guildford High School'},
-  {k:['charterhouse'],lat:51.1855,lng:-0.6108,label:'Charterhouse, Godalming'},
-  {k:["prior's field","priors field"],lat:51.2143,lng:-0.6300,label:"Prior's Field, Godalming"},
-  {k:['woking college'],lat:51.3190,lng:-0.5600,label:'Woking College'},
-  {k:['effingham'],lat:51.2952,lng:-0.3276,label:'Howard of Effingham School'},
-  {k:['acklam'],lat:54.5742,lng:-1.2350,label:'Acklam Grange School'},
-  {k:['conyers'],lat:54.5054,lng:-1.3480,label:'Conyers School, Yarm'},
-  {k:['egglescliffe'],lat:54.5680,lng:-1.3174,label:'Egglescliffe School'},
-  {k:['macmillan'],lat:54.5742,lng:-1.2350,label:'Macmillan Academy'},
-  {k:['nunthorpe'],lat:54.5400,lng:-1.1500,label:'Nunthorpe Academy'},
-  {k:['teesside high'],lat:54.5680,lng:-1.3174,label:'Teesside High School'},
-  {k:['trinity catholic'],lat:54.5742,lng:-1.2350,label:'Trinity Catholic College'},
-];
-
-// ── STATE ──────────────────────────────────────────────────────────────────
+// ── STATE ────────────────────────────────────────────────────────────────
 const selCats=new Set();
 let openPanelId=null;
-const AGE_BANDS={
-  'rec-y2':{min:4,max:8},'y3-y6':{min:8,max:12},
-  'y7-y9':{min:11,max:14},'y10-y11':{min:14,max:16},'sixth':{min:16,max:19}
-};
+let lastGeo=null;
+let _suggestions=[];
 
-// ── CATEGORY TILES ─────────────────────────────────────────────────────────
+// ── HELPERS ──────────────────────────────────────────────────────────────
+function hav(la1,lo1,la2,lo2){
+  const R=3958.8,dLa=(la2-la1)*Math.PI/180,dLo=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dLa/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLo/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function initials(n){return n.split(' ').filter(w=>w.match(/^[A-Z]/)).slice(0,2).map(w=>w[0]).join('')||n.slice(0,2).toUpperCase()}
+function starsHtml(r){
+  const full=Math.floor(r),half=(r-full)>=0.25&&(r-full)<0.75,empty=5-full-(half?1:0);
+  return '<span class="stars">'+'★'.repeat(full)+(half?'½':'')+'☆'.repeat(empty)+'</span>';
+}
+function applyFix(i){var s=_suggestions[i];if(s)s();}
+function enquire(id){
+  var p=P.find(function(x){return x.id===id;});
+  if(p)window.location.href='mailto:'+p.email+'?subject=Enquiry%20about%20'+encodeURIComponent(p.name);
+}
+function toggleContact(id){
+  var c=document.getElementById('contact-'+id);
+  var b=document.getElementById('details-btn-'+id);
+  if(!c)return;
+  var isOpen=c.classList.contains('open');
+  c.classList.toggle('open',!isOpen);
+  b.textContent=isOpen?'Details ↓':'Details ↑';
+}
+function scrollToSearch(){
+  document.getElementById('heroSection').scrollIntoView({behavior:'smooth'});
+}
+
+// ── CATEGORY SELECTION ────────────────────────────────────────────────────
 function toggleCat(btn){
-  const c=btn.dataset.cat;
+  var cat=btn.getAttribute('data-cat');
   document.getElementById('catAll').classList.remove('active');
-  if(selCats.has(c)){selCats.delete(c);btn.classList.remove('active');}
-  else{selCats.add(c);btn.classList.add('active');}
+  if(btn.classList.contains('active')){btn.classList.remove('active');selCats.delete(cat);}
+  else{btn.classList.add('active');selCats.add(cat);}
 }
 function toggleAll(btn){
+  document.querySelectorAll('.cat-tile[data-cat]').forEach(function(b){b.classList.remove('active');});
   selCats.clear();
-  document.querySelectorAll('.cat-tile:not(.cat-all)').forEach(b=>b.classList.remove('active'));
-  btn.classList.toggle('active');
-}
-function getSelectedCats(){
-  const allActive=document.getElementById('catAll').classList.contains('active');
-  if(allActive||selCats.size===0)return [];
-  return [...selCats];
-}
-
-// ── QUICK AREA ─────────────────────────────────────────────────────────────
-function setArea(name,pc,btn){
-  document.getElementById('areaInput').value=name;
-  document.getElementById('postcodeInput').value='';
-  document.querySelectorAll('.qa-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
+function getSelectedCats(){return Array.from(selCats);}
 
-// ── FILTER PANEL TOGGLE ────────────────────────────────────────────────────
-function openPanel(id,btn){
-  const isAlreadyOpen=(openPanelId===id);
-  // close all
-  document.querySelectorAll('.filt-panel').forEach(p=>p.classList.remove('open'));
-  document.querySelectorAll('.filt-btn').forEach(b=>b.classList.remove('panel-open'));
-  if(isAlreadyOpen){openPanelId=null;return;}
-  document.getElementById('panel-'+id).classList.add('open');
-  btn.classList.add('panel-open');
-  openPanelId=id;
-}
-
-// ── CHIP CHANGE: update icon active states + tip visibility ────────────────
-function onChipChange(){
-  setTimeout(()=>{
-    const map={age:'fbAge',gender:'fbGender',session:'fbSession'};
-    ['age','gender','session'].forEach(n=>{
-      const any=[...document.querySelectorAll(`input[name="${n}"]:checked`)].length>0;
-      document.getElementById(map[n]).classList.toggle('active',any);
-    });
-    const whenAny=[...document.querySelectorAll('input[name="when"]:checked')].length>0;
-    const dateAny=!!(document.getElementById('dateFrom').value||document.getElementById('dateTo').value);
-    document.getElementById('fbWhen').classList.toggle('active',whenAny||dateAny);
-    const priceAny=[...document.querySelectorAll('input[name="priceF"]:checked,input[name="priceH"]:checked')].length>0;
-    document.getElementById('fbPrice').classList.toggle('active',priceAny);
-    document.getElementById('fbRating').classList.toggle('active',!!document.querySelector('input[name="rating"]:checked'));
-    const anyChip=[...document.querySelectorAll('.filt-panel input:checked')].length>0;
-    document.getElementById('searchTip').classList.toggle('visible',!anyChip&&!dateAny);
-  },0);
-}
-
-// ── DATE RANGE ─────────────────────────────────────────────────────────────
-function getDateRange(){
-  const f=document.getElementById('dateFrom').value;
-  const t=document.getElementById('dateTo').value;
-  if(!f&&!t)return null;
-  const d1=f?new Date(f):null, d2=t?new Date(t):null;
-  let hasWeekday=false,hasWeekend=false;
-  if(d1&&d2&&d1<=d2){
-    for(let d=new Date(d1);d<=d2;d.setDate(d.getDate()+1)){
-      const day=d.getDay();
-      if(day===0||day===6)hasWeekend=true; else hasWeekday=true;
-      if(hasWeekday&&hasWeekend)break;
-    }
-  } else if(d1){
-    const day=d1.getDay();
-    if(day===0||day===6)hasWeekend=true; else hasWeekday=true;
+// ── FILTER PANELS ─────────────────────────────────────────────────────────
+function togglePanel(id){
+  var panelId=id;
+  var btnId=id+'-btn';
+  if(openPanelId&&openPanelId!==panelId){
+    document.getElementById(openPanelId).classList.remove('open');
+    document.getElementById(openPanelId+'-btn').classList.remove('panel-open');
   }
-  const fmt=d=>d?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-  const label=d1&&d2?`${fmt(d1)} – ${fmt(d2)}`:d1?`From ${fmt(d1)}`:d2?`Until ${fmt(d2)}`:'';
-  return{d1,d2,hasWeekday,hasWeekend,label};
+  var panel=document.getElementById(panelId);
+  var btn=document.getElementById(btnId);
+  var opening=!panel.classList.contains('open');
+  panel.classList.toggle('open',opening);
+  btn.classList.toggle('panel-open',opening);
+  openPanelId=opening?panelId:null;
+}
+function onChipChange(){
+  var checked=[...document.querySelectorAll('.filt-panel input:checked')];
+  document.querySelectorAll('.filt-btn').forEach(function(b){
+    var panel=b.id.replace('-btn','');
+    var hasChecked=checked.some(function(i){return i.closest('#'+panel);});
+    b.classList.toggle('active',hasChecked);
+  });
 }
 function onDateChange(){
-  const dr=getDateRange();
-  document.getElementById('dateClearBtn').classList.toggle('show',!!dr);
-  // auto-tick weekday/weekend chips to match the selected range
-  if(dr){
-    document.querySelector('input[name="when"][value="weekdays"]').checked=dr.hasWeekday;
-    document.querySelector('input[name="when"][value="weekends"]').checked=dr.hasWeekend;
-  }
-  onChipChange();
+  var f=document.getElementById('dateFrom').value;
+  var t=document.getElementById('dateTo').value;
+  document.getElementById('dateClearBtn').classList.toggle('show',!!(f||t));
+  document.getElementById('filt-when-btn').classList.toggle('active',!!(f||t));
 }
 function clearDates(){
   document.getElementById('dateFrom').value='';
   document.getElementById('dateTo').value='';
   document.getElementById('dateClearBtn').classList.remove('show');
-  onChipChange();
+  document.getElementById('filt-when-btn').classList.remove('active');
+}
+function getDateRange(){
+  var f=document.getElementById('dateFrom').value;
+  var t=document.getElementById('dateTo').value;
+  if(!f&&!t)return null;
+  var label=f&&t?f+' to '+t:f?'from '+f:'to '+t;
+  return{from:f?new Date(f):null,to:t?new Date(t):null,label:label};
 }
 
-// Show tip on load
-window.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('searchTip').classList.add('visible');
-});
-
-// ── UTILS ─────────────────────────────────────────────────────────────────
-const hav=(a,b,c,d)=>{
-  const R=3958.8,dL=(c-a)*Math.PI/180,dN=(d-b)*Math.PI/180,
-    x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dN/2)**2;
-  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+// ── GEO LOOKUP ────────────────────────────────────────────────────────────
+var GEO_CACHE={
+  'guildford':{lat:51.2362,lng:-0.5704,label:'Guildford'},
+  'woking':{lat:51.3190,lng:-0.5600,label:'Woking'},
+  'cobham':{lat:51.3281,lng:-0.4099,label:'Cobham'},
+  'epsom':{lat:51.3355,lng:-0.2694,label:'Epsom'},
+  'dorking':{lat:51.2329,lng:-0.3341,label:'Dorking'},
+  'farnham':{lat:51.2143,lng:-0.7981,label:'Farnham'},
+  'leatherhead':{lat:51.2952,lng:-0.3276,label:'Leatherhead'},
+  'middlesbrough':{lat:54.5741,lng:-1.2346,label:'Middlesbrough'},
+  'stockton':{lat:54.5704,lng:-1.3192,label:'Stockton'},
+  'redcar':{lat:54.6142,lng:-1.0649,label:'Redcar'},
+  'hartlepool':{lat:54.6853,lng:-1.2089,label:'Hartlepool'},
+  'darlington':{lat:54.5236,lng:-1.5546,label:'Darlington'},
+  'whitby':{lat:54.4844,lng:-0.6146,label:'Whitby'}
 };
-const chk=n=>[...document.querySelectorAll(`input[name="${n}"]:checked`)].map(x=>x.value);
-const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
-
-// ── GEO ───────────────────────────────────────────────────────────────────
-async function getGeo(){
-  const pc=document.getElementById('postcodeInput').value.trim().toUpperCase();
-  const area=document.getElementById('areaInput').value.trim().toLowerCase();
-  if(pc){
-    const r=await fetch(`https://api.postcodes.io/postcodes/${pc.replace(/\s/,'')}`);
-    if(r.ok){const d=await r.json();return{lat:d.result.latitude,lng:d.result.longitude,label:pc};}
+function useLocation(label,lat,lng){
+  document.getElementById('areaInput').value=label;
+  lastGeo={lat:lat,lng:lng,label:label};
+}
+async function getGeo(q){
+  var k=q.toLowerCase().trim();
+  if(GEO_CACHE[k])return GEO_CACHE[k];
+  // postcode pattern
+  var pc=k.replace(/\s+/g,'').toUpperCase();
+  if(/^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$/i.test(pc)||/^[A-Z]{1,2}[0-9]+$/i.test(pc)){
+    try{
+      var r=await fetch('https://api.postcodes.io/postcodes/'+encodeURIComponent(pc));
+      var d=await r.json();
+      if(d.result)return{lat:d.result.latitude,lng:d.result.longitude,label:q.toUpperCase()};
+    }catch(e){}
   }
-  if(area){
-    for(const loc of LOC){
-      if(loc.k.some(k=>area.includes(k)||k.includes(area.split(' ')[0])))
-        return{lat:loc.lat,lng:loc.lng,label:loc.label};
-    }
-  }
+  // fallback: nominatim
+  try{
+    var r2=await fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q+', UK')+'&format=json&limit=1');
+    var d2=await r2.json();
+    if(d2.length)return{lat:parseFloat(d2[0].lat),lng:parseFloat(d2[0].lon),label:d2[0].display_name.split(',')[0]};
+  }catch(e){}
   return null;
 }
 
-// ── REFINE FILTERS ────────────────────────────────────────────────────────
-function ageOk(p){
-  const ages=chk('age');
-  if(!ages.length)return true;
-  return ages.some(a=>{const b=AGE_BANDS[a];return p.ageMin<=b.max&&p.ageMax>=b.min;});
-}
-function priceOk(p){
-  const pF=chk('priceF'),pH=chk('priceH');
-  if(!pF.length&&!pH.length)return true;
-  const BANDS_F=[[0,30],[30,50],[50,75],[75,999]];
-  const BANDS_H=[[0,15],[15,25],[25,35],[35,999]];
-  const fOk=pF.length&&p.priceFull!=null?pF.some(v=>{const[lo,hi]=BANDS_F[+v-1];return p.priceFull>=lo&&p.priceFull<hi;}):false;
-  const hOk=pH.length&&p.priceHalf!=null?pH.some(v=>{const[lo,hi]=BANDS_H[+v-1];return p.priceHalf>=lo&&p.priceHalf<hi;}):false;
-  if(pF.length&&pH.length)return fOk||hOk;
-  if(pF.length)return fOk;
-  return hOk;
-}
-function applyRefine(p){
-  const g=chk('gender'),s=chk('session'),w=chk('when');
-  const rEl=document.querySelector('input[name="rating"]:checked');
-  if(rEl&&p.rP<parseFloat(rEl.value))return false;
-  if(g.length&&!g.includes(p.gender))return false;
-  if(s.length&&!s.some(x=>p.sessions.includes(x)))return false;
-  // date range: if set, check provider operates on days within the range
-  const dr=getDateRange();
+// ── FILTERS ───────────────────────────────────────────────────────────────
+function applyFilters(p,dr){
+  // Age
+  var ageChecked=[...document.querySelectorAll('input[name="age"]:checked')].map(function(i){return i.value;});
+  if(ageChecked.length){
+    var ok=ageChecked.some(function(v){var parts=v.split('-');return p.ageMax>=parseInt(parts[0])&&p.ageMin<=parseInt(parts[1]);});
+    if(!ok)return false;
+  }
+  // Gender
+  var genderChecked=[...document.querySelectorAll('input[name="gender"]:checked')].map(function(i){return i.value;});
+  if(genderChecked.length&&!genderChecked.includes(p.gender))return false;
+  // Session
+  var sessChecked=[...document.querySelectorAll('input[name="session"]:checked')].map(function(i){return i.value;});
+  if(sessChecked.length&&!sessChecked.some(function(s){return p.sessions.includes(s);}))return false;
+  // Day type
+  var dayChecked=[...document.querySelectorAll('input[name="daytype"]:checked')].map(function(i){return i.value;});
+  if(dayChecked.includes('weekdays')&&!p.weekdays)return false;
+  if(dayChecked.includes('weekends')&&!p.weekends)return false;
+  // Dates
   if(dr){
-    const canMatch=(dr.hasWeekday&&p.weekdays)||(dr.hasWeekend&&p.weekends);
-    if(!canMatch)return false;
+    var hasWkd=dr.from?[0,6].includes(dr.from.getDay()):false;
+    var hasWke=dr.from?[1,2,3,4,5].includes(dr.from.getDay()):false;
+    if(hasWkd&&!p.weekdays)return false;
+    if(hasWke&&!p.weekends)return false;
   }
-  if(w.length){
-    if(w.includes('weekdays')&&!p.weekdays)return false;
-    if(w.includes('weekends')&&!p.weekends)return false;
+  // Price full
+  var pFChecked=[...document.querySelectorAll('input[name="priceF"]:checked')].map(function(i){return i.value;});
+  if(pFChecked.length&&p.priceFull){
+    var ok2=pFChecked.some(function(v){var parts=v.split('-');return p.priceFull>=parseInt(parts[0])&&p.priceFull<=parseInt(parts[1]);});
+    if(!ok2)return false;
   }
-  if(!ageOk(p))return false;
-  if(!priceOk(p))return false;
+  // Price half
+  var pHChecked=[...document.querySelectorAll('input[name="priceH"]:checked')].map(function(i){return i.value;});
+  if(pHChecked.length&&p.priceHalf){
+    var ok3=pHChecked.some(function(v){var parts=v.split('-');return p.priceHalf>=parseInt(parts[0])&&p.priceHalf<=parseInt(parts[1]);});
+    if(!ok3)return false;
+  }
+  // Rating
+  var ratingEl=document.querySelector('input[name="rating"]:checked');
+  if(ratingEl&&p.rP<parseFloat(ratingEl.value))return false;
   return true;
 }
 
-// ── SEARCH ────────────────────────────────────────────────────────────────
-async function runSearch(){
-  const btn=document.querySelector('.search-btn');
-  btn.textContent='Searching…';btn.disabled=true;
-  const g=await getGeo();
-  if(!g){
-    btn.textContent='🔍 Search';btn.disabled=false;
-    alert('Please enter a town, school name or postcode first.');return;
+// ── CLEAR ALL FILTERS ─────────────────────────────────────────────────────
+function clearAllFilters(){
+  document.querySelectorAll('.filt-panel input').forEach(function(i){i.checked=false;});
+  document.getElementById('dateFrom').value='';
+  document.getElementById('dateTo').value='';
+  document.getElementById('dateClearBtn').classList.remove('show');
+  document.querySelectorAll('.filt-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.filt-btn').forEach(function(b){b.classList.remove('panel-open');b.classList.remove('active');});
+  openPanelId=null;
+  if(lastGeo){
+    var cats=getSelectedCats();
+    var maxDist=parseFloat(document.getElementById('distSelect').value);
+    var list=P.map(function(p){return Object.assign({},p,{dist:hav(lastGeo.lat,lastGeo.lng,p.lat,p.lng)});})
+      .sort(function(a,b){return a.dist-b.dist;})
+      .filter(function(p){
+        if(cats.length&&!cats.includes(p.cat))return false;
+        if(maxDist>0&&p.dist>maxDist)return false;
+        return true;
+      });
+    render(list,lastGeo.label,maxDist,cats);
   }
-  const cats=getSelectedCats();
-  const distEl=document.querySelector('input[name="dist"]:checked');
-  const maxDist=distEl?parseFloat(distEl.value):0;
-  const anyRefine=[...document.querySelectorAll('.filt-panel input:checked')].length>0||!!getDateRange();
+}
 
-  let list=P
-    .map(p=>({...p,dist:hav(g.lat,g.lng,p.lat,p.lng)}))
-    .sort((a,b)=>a.dist-b.dist)
-    .filter(p=>{
+// ── RUN SEARCH ───────────────────────────────────────────────────────────
+async function runSearch(){
+  var q=document.getElementById('areaInput').value.trim();
+  if(!q){alert('Please enter a town, school or postcode.');return;}
+  var btn=document.getElementById('searchBtn');
+  btn.innerHTML='Searching…';
+  btn.disabled=true;
+  var g=await getGeo(q);
+  if(!g){btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><\/svg> Search';btn.disabled=false;alert('Location not found. Try a different town or postcode.');return;}
+  lastGeo=g;
+  var cats=getSelectedCats();
+  var maxDist=parseFloat(document.getElementById('distSelect').value);
+  var dr=getDateRange();
+  var anyRefine=[...document.querySelectorAll('.filt-panel input:checked')].length>0||!!dr;
+  var list=P.map(function(p){return Object.assign({},p,{dist:hav(g.lat,g.lng,p.lat,p.lng)});})
+    .sort(function(a,b){return a.dist-b.dist;})
+    .filter(function(p){
       if(cats.length&&!cats.includes(p.cat))return false;
       if(maxDist>0&&p.dist>maxDist)return false;
-      if(anyRefine&&!applyRefine(p))return false;
+      if(anyRefine&&!applyFilters(p,dr))return false;
       return true;
     });
-
   render(list,g.label,maxDist,cats);
-  btn.textContent='🔍 Search';btn.disabled=false;
+  btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><\/svg> Search';
+  btn.disabled=false;
+  var catLabel=cats.length?cats.join(', '):'All activities';
+  var distLabel=maxDist>0?' · within '+maxDist+' mi':'';
+  document.getElementById('stickySummary').innerHTML='<strong>'+catLabel+'</strong> near <strong>'+g.label+'</strong>'+distLabel;
+  document.getElementById('stickyBar').classList.add('show');
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────
 function render(list,locLabel,maxDist,cats){
-  const sec=document.getElementById('results');
+  var sec=document.getElementById('results');
   sec.style.display='block';
-  const distTxt=maxDist>0?` within ${maxDist} miles of`:'near';
-  const catTxt=cats.length?cats.join(', '):'all activities';
-  const dr=getDateRange();
-  const dateTxt=dr?` &middot; <strong>${dr.label}</strong>`:'';
+  var distTxt=maxDist>0?'within '+maxDist+' miles of':'near';
+  var catTxt=cats.length?cats.join(', '):'all activities';
+  var dr=getDateRange();
+  var anyFilters=document.querySelectorAll('.filt-panel input:checked').length>0||!!dr;
+
   if(!list.length){
-    const suggest=dr
-      ?`No ${catTxt} found for those dates near <strong>${locLabel}</strong>. Try a wider date range, more distance, or different filters.`
-      :`No results found for <strong>${catTxt}</strong> ${distTxt} <strong>${locLabel}</strong>. Try adjusting your filters or expanding the distance.`;
-    sec.innerHTML=`<div class="no-results"><div class="no-icon">&#128269;</div><p>${suggest}</p></div>`;
-    sec.scrollIntoView({behavior:'smooth'});return;
+    _suggestions=[];
+    var newDist=maxDist===5?'10':'20';
+    if(maxDist>0&&maxDist<20)_suggestions.push(function(){document.getElementById('distSelect').value=newDist;runSearch();});
+    if(cats.length)_suggestions.push(function(){document.querySelectorAll('.cat-tile').forEach(function(b){b.classList.remove('active');});selCats.clear();document.getElementById('catAll').classList.add('active');runSearch();});
+    if(document.querySelectorAll('input[name="when"]:checked').length)_suggestions.push(function(){document.querySelectorAll('input[name="when"]').forEach(function(i){i.checked=false;});onChipChange();runSearch();});
+    if(document.querySelectorAll('input[name="gender"]:checked').length)_suggestions.push(function(){document.querySelectorAll('input[name="gender"]').forEach(function(i){i.checked=false;});onChipChange();runSearch();});
+    var labels=['Try '+(maxDist===5?10:20)+' miles','Try all activities','Any day of week','Any gender'];
+    var sugHtml='';
+    if(_suggestions.length){
+      sugHtml='<p class="no-suggestions-title">Quick fixes</p><div class="no-suggestion-chips">';
+      for(var si=0;si<_suggestions.length;si++){sugHtml+='<button class="no-chip" onclick="applyFix('+si+')">'+labels[si]+'</button>';}
+      sugHtml+='</div>';
+    }
+    sec.innerHTML='<div class="no-results"><div class="no-icon">&#128269;</div><h3>No '+catTxt+' found near '+locLabel+'</h3><p>Try adjusting your filters or expanding the search distance.</p>'+sugHtml+'</div>';
+    sec.scrollIntoView({behavior:'smooth'});
+    return;
   }
-  let html=`<div class="results-meta"><span>Found <strong>${list.length}</strong> ${catTxt} ${distTxt} <strong>${locLabel}</strong>${dateTxt}</span></div><div class="cards-grid">`;
-  for(const p of list){
-    const distBadge=p.dist<50?`${p.dist.toFixed(1)} mi`:'far';
-    const sessStr=p.sessions.join(' / ');
-    const pStr=p.priceFull?`Full day £${p.priceFull}`:'';
-    const pH=p.priceHalf?`Half day £${p.priceHalf}`:'';
-    const priceStr=[pStr,pH].filter(Boolean).join(' · ');
-    html+=`<div class="card"><div class="card-header"><div class="card-top"><div class="card-name">${p.name}</div><div class="card-dist">${distBadge}</div></div><div class="card-badges"><span class="badge badge-cat">${p.cat}</span>${p.insured?'<span class="badge badge-insured">&#10003; Insured</span>':''}<span class="badge badge-gender">${p.gender}</span><span class="badge badge-session">${sessStr}</span></div><div class="card-desc">${p.desc}</div></div><div class="card-body"><div class="card-meta"><div class="meta-item"><span>Ages <strong>${p.ageMin}&ndash;${p.ageMax}</strong></span></div><div class="meta-item"><span>${priceStr||'See website'}</span></div><div class="meta-item"><span>Est. <strong>${p.founded}</strong></span></div><div class="meta-item"><span class="stars">${'&#9733;'.repeat(Math.round(p.rP))}${'&#9734;'.repeat(5-Math.round(p.rP))}</span>&nbsp;<strong>${p.rP}</strong>&nbsp;<span style="color:#aaa">(${p.rPN} parents)</span></div><div class="meta-item"><span class="stars">${'&#9733;'.repeat(Math.round(p.rK))}${'&#9734;'.repeat(5-Math.round(p.rK))}</span>&nbsp;<strong>${p.rK}</strong>&nbsp;<span style="color:#aaa">(${p.rKN} kids)</span></div></div><div class="card-divider"></div><div class="address-row"><span>&#128205;</span><span>${p.addr}, ${p.town}&nbsp;<strong>${p.postcode}</strong></span></div><div class="contact-row"><a class="contact-link" href="https://${p.web}" target="_blank" rel="noopener">&#127760; ${p.web}</a><a class="contact-link" href="tel:${p.phone.replace(/\s/g,'')}">&#128222; ${p.phone}</a><a class="contact-link" href="mailto:${p.email}">&#9993; ${p.email}</a></div></div></div>`;
+
+  var drLabel=dr?' &nbsp;&#183;&nbsp; <strong style="color:#1B6B5E">'+dr.label+'</strong>':'';
+  var clearBtnHtml=anyFilters?'<button class="clear-filters-btn show" onclick="clearAllFilters()">&#10005; Clear filters</button>':'<button class="clear-filters-btn"></button>';
+
+  var html='<div class="results-header">'
+    +'<div class="results-count"><span class="count-num">'+list.length+'</span><br>'
+    +'<span style="font-size:.78rem;color:#4B5563">'+catTxt+' '+distTxt+' <strong style="color:#1A1A1A">'+locLabel+'</strong>'+drLabel+'</span></div>'
+    +clearBtnHtml
+    +'</div>'
+    +'<div class="cards-grid">';
+
+  for(var i=0;i<list.length;i++){
+    var p=list[i];
+    var distBadge=p.dist<50?p.dist.toFixed(1)+' mi':'';
+    var sessStr=p.sessions.join(' \xb7 ');
+    var priceFrom=p.priceHalf?'&#163;'+p.priceHalf:p.priceFull?'&#163;'+p.priceFull:'';
+    var priceSub=p.priceHalf?'half day':p.priceFull?'full day':'';
+    var init=initials(p.name);
+    var distBadgeHtml=distBadge?'<span class="badge badge-dist">'+distBadge+'</span>':'';
+    var priceHtml=priceFrom
+      ?'<div class="price-from">from</div><div class="price-main">'+priceFrom+'</div><div class="price-from">'+priceSub+'</div>'
+      :'<div class="price-from" style="margin-top:4px">See website</div>';
+    var dbsHtml=p.insured?'<span class="trust-badge trust-dbs">&#10003; DBS checked</span>':'';
+    var insHtml=p.insured?'<span class="trust-badge trust-insured">&#10003; Insured</span>':'';
+    var phoneClean=p.phone.replace(/\s/g,'');
+
+    html+='<div class="card" data-cat="'+p.cat+'">'
+      +'<div class="card-cat-strip"></div>'
+      +'<div class="card-inner">'
+      +'<div class="card-top">'
+      +'<div class="card-avatar">'+init+'</div>'
+      +'<div class="card-title-block">'
+      +'<div class="card-name">'+p.name+'</div>'
+      +'<div class="card-badges-row">'
+      +'<span class="badge badge-cat">'+p.cat+'</span>'
+      +distBadgeHtml
+      +'<span class="badge" style="background:#F3F4F6;color:#4B5563">'+p.gender+'</span>'
+      +'</div>'
+      +'</div>'
+      +'<div class="card-price-block">'+priceHtml+'</div>'
+      +'</div>'
+      +'<p class="card-desc">'+p.desc+'</p>'
+      +'<div class="card-info-grid">'
+      +'<div class="info-item"><span class="info-label">Ages</span><span class="info-value">'+p.ageMin+'&ndash;'+p.ageMax+' yrs</span></div>'
+      +'<div class="info-item"><span class="info-label">Session</span><span class="info-value">'+sessStr+'</span></div>'
+      +'<div class="info-item"><span class="info-label">Parents</span><span class="info-value">'+starsHtml(p.rP)+' <span style="font-size:.7rem;color:#1A1A1A">'+p.rP+'</span></span></div>'
+      +'</div>'
+      +'<div class="card-trust-row">'
+      +'<span class="trust-badge trust-verified">&#10003; Verified provider</span>'
+      +dbsHtml
+      +insHtml
+      +'<span class="trust-badge trust-reviews">&#9733; '+p.rP+' ('+p.rPN+' parent reviews)</span>'
+      +'</div>'
+      +'<div class="card-cta-row">'
+      +'<button class="enquire-btn" onclick="enquire('+p.id+')">Enquire now</button>'
+      +'<button class="details-btn" id="details-btn-'+p.id+'" onclick="toggleContact('+p.id+')">Details &#8595;</button>'
+      +'</div>'
+      +'<div class="card-contact" id="contact-'+p.id+'">'
+      +'<div class="address-row">&#128205; '+p.addr+', '+p.town+' <strong>'+p.postcode+'</strong></div>'
+      +'<div class="contact-links">'
+      +'<a class="contact-link" href="https://'+p.web+'" target="_blank" rel="noopener">&#127760; '+p.web+'</a>'
+      +'<a class="contact-link" href="tel:'+phoneClean+'">&#128222; '+p.phone+'</a>'
+      +'<a class="contact-link" href="mailto:'+p.email+'">&#9993; '+p.email+'</a>'
+      +'</div>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
   }
+
   html+='</div>';
   sec.innerHTML=html;
   sec.scrollIntoView({behavior:'smooth'});
