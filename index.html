@@ -81,6 +81,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chip input:checked+span{background:#0a0a0a;border-color:#0a0a0a;color:#fff}
 .chip:hover span{border-color:#aaa}
 
+/* ── DATE RANGE PICKER ── */
+.panel-divider{height:1px;background:#ebebeb;margin:12px 0}
+.date-range-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+.date-field{display:flex;flex-direction:column;gap:5px}
+.date-label{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb}
+.date-input{width:100%;padding:8px 10px;border-radius:4px;border:1px solid #e0e0e0;background:#fff;color:#0a0a0a;font-size:.78rem;font-weight:600;outline:none;transition:border-color .2s;cursor:pointer;font-family:inherit}
+.date-input:focus{border-color:#0a0a0a}
+.date-sep{font-size:.9rem;color:#ccc;font-weight:600;text-align:center;padding-bottom:9px}
+.date-hint{font-size:.65rem;color:#bbb;margin-top:8px;line-height:1.5}
+.date-clear{display:none;background:none;border:none;font-size:.65rem;color:#888;cursor:pointer;padding:4px 0;letter-spacing:.04em;text-decoration:underline;font-family:inherit}
+.date-clear.show{display:inline-block}
+
 /* ── TIP + SEARCH BTN ── */
 .search-tip{background:#fafafa;border:1px solid #ebebeb;border-radius:6px;padding:10px 14px;font-size:.75rem;color:#bbb;margin-top:14px;display:none;line-height:1.6}
 .search-tip.visible{display:block}
@@ -267,11 +279,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <!-- WHEN -->
       <div class="filt-panel" id="panel-when">
-        <div class="panel-title">When</div>
+        <div class="panel-title">Day type</div>
         <div class="chip-row">
           <label class="chip" onclick="onChipChange()"><input type="checkbox" name="when" value="weekdays"><span>Weekdays</span></label>
           <label class="chip" onclick="onChipChange()"><input type="checkbox" name="when" value="weekends"><span>Weekends</span></label>
         </div>
+        <div class="panel-divider"></div>
+        <div class="panel-title">Specific dates</div>
+        <div class="date-range-row">
+          <div class="date-field">
+            <span class="date-label">From</span>
+            <input type="date" id="dateFrom" class="date-input" onchange="onDateChange()">
+          </div>
+          <div class="date-sep">→</div>
+          <div class="date-field">
+            <span class="date-label">To</span>
+            <input type="date" id="dateTo" class="date-input" onchange="onDateChange()">
+          </div>
+        </div>
+        <p class="date-hint">Dates auto-filter by weekday / weekend. <button class="date-clear" id="dateClearBtn" onclick="clearDates()">Clear dates</button></p>
       </div>
       <!-- PRICE -->
       <div class="filt-panel" id="panel-price">
@@ -437,19 +463,58 @@ function openPanel(id,btn){
 // ── CHIP CHANGE: update icon active states + tip visibility ────────────────
 function onChipChange(){
   setTimeout(()=>{
-    // update each filter button active state
-    const map={age:'fbAge',gender:'fbGender',session:'fbSession',when:'fbWhen'};
-    ['age','gender','session','when'].forEach(n=>{
+    const map={age:'fbAge',gender:'fbGender',session:'fbSession'};
+    ['age','gender','session'].forEach(n=>{
       const any=[...document.querySelectorAll(`input[name="${n}"]:checked`)].length>0;
       document.getElementById(map[n]).classList.toggle('active',any);
     });
+    const whenAny=[...document.querySelectorAll('input[name="when"]:checked')].length>0;
+    const dateAny=!!(document.getElementById('dateFrom').value||document.getElementById('dateTo').value);
+    document.getElementById('fbWhen').classList.toggle('active',whenAny||dateAny);
     const priceAny=[...document.querySelectorAll('input[name="priceF"]:checked,input[name="priceH"]:checked')].length>0;
     document.getElementById('fbPrice').classList.toggle('active',priceAny);
     document.getElementById('fbRating').classList.toggle('active',!!document.querySelector('input[name="rating"]:checked'));
-    // tip visibility: show if NO chips selected
     const anyChip=[...document.querySelectorAll('.filt-panel input:checked')].length>0;
-    document.getElementById('searchTip').classList.toggle('visible',!anyChip);
+    document.getElementById('searchTip').classList.toggle('visible',!anyChip&&!dateAny);
   },0);
+}
+
+// ── DATE RANGE ─────────────────────────────────────────────────────────────
+function getDateRange(){
+  const f=document.getElementById('dateFrom').value;
+  const t=document.getElementById('dateTo').value;
+  if(!f&&!t)return null;
+  const d1=f?new Date(f):null, d2=t?new Date(t):null;
+  let hasWeekday=false,hasWeekend=false;
+  if(d1&&d2&&d1<=d2){
+    for(let d=new Date(d1);d<=d2;d.setDate(d.getDate()+1)){
+      const day=d.getDay();
+      if(day===0||day===6)hasWeekend=true; else hasWeekday=true;
+      if(hasWeekday&&hasWeekend)break;
+    }
+  } else if(d1){
+    const day=d1.getDay();
+    if(day===0||day===6)hasWeekend=true; else hasWeekday=true;
+  }
+  const fmt=d=>d?d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+  const label=d1&&d2?`${fmt(d1)} – ${fmt(d2)}`:d1?`From ${fmt(d1)}`:d2?`Until ${fmt(d2)}`:'';
+  return{d1,d2,hasWeekday,hasWeekend,label};
+}
+function onDateChange(){
+  const dr=getDateRange();
+  document.getElementById('dateClearBtn').classList.toggle('show',!!dr);
+  // auto-tick weekday/weekend chips to match the selected range
+  if(dr){
+    document.querySelector('input[name="when"][value="weekdays"]').checked=dr.hasWeekday;
+    document.querySelector('input[name="when"][value="weekends"]').checked=dr.hasWeekend;
+  }
+  onChipChange();
+}
+function clearDates(){
+  document.getElementById('dateFrom').value='';
+  document.getElementById('dateTo').value='';
+  document.getElementById('dateClearBtn').classList.remove('show');
+  onChipChange();
 }
 
 // Show tip on load
@@ -506,6 +571,12 @@ function applyRefine(p){
   if(rEl&&p.rP<parseFloat(rEl.value))return false;
   if(g.length&&!g.includes(p.gender))return false;
   if(s.length&&!s.some(x=>p.sessions.includes(x)))return false;
+  // date range: if set, check provider operates on days within the range
+  const dr=getDateRange();
+  if(dr){
+    const canMatch=(dr.hasWeekday&&p.weekdays)||(dr.hasWeekend&&p.weekends);
+    if(!canMatch)return false;
+  }
   if(w.length){
     if(w.includes('weekdays')&&!p.weekdays)return false;
     if(w.includes('weekends')&&!p.weekends)return false;
@@ -522,83 +593,4 @@ async function runSearch(){
   const g=await getGeo();
   if(!g){
     btn.textContent='🔍 Search';btn.disabled=false;
-    alert('Please enter a town, school name or postcode first.');return;
-  }
-  const cats=getSelectedCats();
-  // distance limit
-  const distEl=document.querySelector('input[name="dist"]:checked');
-  const maxDist=distEl?parseFloat(distEl.value):0;
-  // any refine chips picked?
-  const anyRefine=[...document.querySelectorAll('.filt-panel input:checked')].length>0;
-
-  let list=P
-    .map(p=>({...p,dist:hav(g.lat,g.lng,p.lat,p.lng)}))
-    .sort((a,b)=>a.dist-b.dist)
-    .filter(p=>{
-      if(cats.length&&!cats.includes(p.cat))return false;
-      if(maxDist>0&&p.dist>maxDist)return false;
-      if(anyRefine&&!applyRefine(p))return false;
-      return true;
-    });
-
-  render(list,g.label,maxDist,cats);
-  btn.textContent='🔍 Search';btn.disabled=false;
-}
-
-// ── RENDER ────────────────────────────────────────────────────────────────
-function render(list,locLabel,maxDist,cats){
-  const sec=document.getElementById('results');
-  sec.style.display='block';
-  const distTxt=maxDist>0?` within ${maxDist} miles of`:'near';
-  const catTxt=cats.length?cats.join(', '):'all activities';
-  if(!list.length){
-    sec.innerHTML=`<div class="no-results"><div class="no-icon">🔍</div><p>No results found for <strong>${catTxt}</strong> ${distTxt} <strong>${locLabel}</strong>.<br>Try adjusting your filters or expanding the distance.</p></div>`;
-    sec.scrollIntoView({behavior:'smooth'});return;
-  }
-  let html=`<div class="results-meta"><span>Found <strong>${list.length}</strong> ${catTxt} ${distTxt} <strong>${locLabel}</strong></span></div><div class="cards-grid">`;
-  for(const p of list){
-    const distBadge=p.dist<50?`${p.dist.toFixed(1)} mi`:'far';
-    const sessStr=p.sessions.join(' / ');
-    const pStr=p.priceFull?`Full day £${p.priceFull}`:'';
-    const pH=p.priceHalf?`Half day £${p.priceHalf}`:'';
-    const priceStr=[pStr,pH].filter(Boolean).join(' · ');
-    html+=`
-<div class="card">
-  <div class="card-header">
-    <div class="card-top">
-      <div class="card-name">${p.name}</div>
-      <div class="card-dist">${distBadge}</div>
-    </div>
-    <div class="card-badges">
-      <span class="badge badge-cat">${p.cat}</span>
-      ${p.insured?'<span class="badge badge-insured">✓ Insured</span>':''}
-      <span class="badge badge-gender">${p.gender}</span>
-      <span class="badge badge-session">${sessStr}</span>
-    </div>
-    <div class="card-desc">${p.desc}</div>
-  </div>
-  <div class="card-body">
-    <div class="card-meta">
-      <div class="meta-item">🎂 <span>Ages <strong>${p.ageMin}–${p.ageMax}</strong></span></div>
-      <div class="meta-item">💷 <span>${priceStr||'See website'}</span></div>
-      <div class="meta-item">📅 <span>Est. <strong>${p.founded}</strong></span></div>
-      <div class="meta-item"><span class="stars">${stars(p.rP)}</span>&nbsp;<strong>${p.rP}</strong>&nbsp;<span style="color:#aaa">(${p.rPN} parents)</span></div>
-      <div class="meta-item"><span class="stars">${stars(p.rK)}</span>&nbsp;<strong>${p.rK}</strong>&nbsp;<span style="color:#aaa">(${p.rKN} kids)</span></div>
-    </div>
-    <div class="card-divider"></div>
-    <div class="address-row"><span>📍</span><span>${p.addr}, ${p.town}&nbsp;<strong>${p.postcode}</strong></span></div>
-    <div class="contact-row">
-      <a class="contact-link" href="https://${p.web}" target="_blank" rel="noopener">🌐 ${p.web}</a>
-      <a class="contact-link" href="tel:${p.phone.replace(/\s/g,'')}">📞 ${p.phone}</a>
-      <a class="contact-link" href="mailto:${p.email}">✉️ ${p.email}</a>
-    </div>
-  </div>
-</div>`;
-  }
-  html+='</div>';
-  sec.innerHTML=html;
-  sec.scrollIntoView({behavior:'smooth'});
-}
-</script>
-</body>
-</html>
+    alert('Please enter a town, school n
