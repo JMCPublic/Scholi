@@ -593,4 +593,55 @@ async function runSearch(){
   const g=await getGeo();
   if(!g){
     btn.textContent='🔍 Search';btn.disabled=false;
-    alert('Please enter a town, school n
+    alert('Please enter a town, school name or postcode first.');return;
+  }
+  const cats=getSelectedCats();
+  const distEl=document.querySelector('input[name="dist"]:checked');
+  const maxDist=distEl?parseFloat(distEl.value):0;
+  const anyRefine=[...document.querySelectorAll('.filt-panel input:checked')].length>0||!!getDateRange();
+
+  let list=P
+    .map(p=>({...p,dist:hav(g.lat,g.lng,p.lat,p.lng)}))
+    .sort((a,b)=>a.dist-b.dist)
+    .filter(p=>{
+      if(cats.length&&!cats.includes(p.cat))return false;
+      if(maxDist>0&&p.dist>maxDist)return false;
+      if(anyRefine&&!applyRefine(p))return false;
+      return true;
+    });
+
+  render(list,g.label,maxDist,cats);
+  btn.textContent='🔍 Search';btn.disabled=false;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function render(list,locLabel,maxDist,cats){
+  const sec=document.getElementById('results');
+  sec.style.display='block';
+  const distTxt=maxDist>0?` within ${maxDist} miles of`:'near';
+  const catTxt=cats.length?cats.join(', '):'all activities';
+  const dr=getDateRange();
+  const dateTxt=dr?` &middot; <strong>${dr.label}</strong>`:'';
+  if(!list.length){
+    const suggest=dr
+      ?`No ${catTxt} found for those dates near <strong>${locLabel}</strong>. Try a wider date range, more distance, or different filters.`
+      :`No results found for <strong>${catTxt}</strong> ${distTxt} <strong>${locLabel}</strong>. Try adjusting your filters or expanding the distance.`;
+    sec.innerHTML=`<div class="no-results"><div class="no-icon">&#128269;</div><p>${suggest}</p></div>`;
+    sec.scrollIntoView({behavior:'smooth'});return;
+  }
+  let html=`<div class="results-meta"><span>Found <strong>${list.length}</strong> ${catTxt} ${distTxt} <strong>${locLabel}</strong>${dateTxt}</span></div><div class="cards-grid">`;
+  for(const p of list){
+    const distBadge=p.dist<50?`${p.dist.toFixed(1)} mi`:'far';
+    const sessStr=p.sessions.join(' / ');
+    const pStr=p.priceFull?`Full day £${p.priceFull}`:'';
+    const pH=p.priceHalf?`Half day £${p.priceHalf}`:'';
+    const priceStr=[pStr,pH].filter(Boolean).join(' · ');
+    html+=`<div class="card"><div class="card-header"><div class="card-top"><div class="card-name">${p.name}</div><div class="card-dist">${distBadge}</div></div><div class="card-badges"><span class="badge badge-cat">${p.cat}</span>${p.insured?'<span class="badge badge-insured">&#10003; Insured</span>':''}<span class="badge badge-gender">${p.gender}</span><span class="badge badge-session">${sessStr}</span></div><div class="card-desc">${p.desc}</div></div><div class="card-body"><div class="card-meta"><div class="meta-item"><span>Ages <strong>${p.ageMin}&ndash;${p.ageMax}</strong></span></div><div class="meta-item"><span>${priceStr||'See website'}</span></div><div class="meta-item"><span>Est. <strong>${p.founded}</strong></span></div><div class="meta-item"><span class="stars">${'&#9733;'.repeat(Math.round(p.rP))}${'&#9734;'.repeat(5-Math.round(p.rP))}</span>&nbsp;<strong>${p.rP}</strong>&nbsp;<span style="color:#aaa">(${p.rPN} parents)</span></div><div class="meta-item"><span class="stars">${'&#9733;'.repeat(Math.round(p.rK))}${'&#9734;'.repeat(5-Math.round(p.rK))}</span>&nbsp;<strong>${p.rK}</strong>&nbsp;<span style="color:#aaa">(${p.rKN} kids)</span></div></div><div class="card-divider"></div><div class="address-row"><span>&#128205;</span><span>${p.addr}, ${p.town}&nbsp;<strong>${p.postcode}</strong></span></div><div class="contact-row"><a class="contact-link" href="https://${p.web}" target="_blank" rel="noopener">&#127760; ${p.web}</a><a class="contact-link" href="tel:${p.phone.replace(/\s/g,'')}">&#128222; ${p.phone}</a><a class="contact-link" href="mailto:${p.email}">&#9993; ${p.email}</a></div></div></div>`;
+  }
+  html+='</div>';
+  sec.innerHTML=html;
+  sec.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
