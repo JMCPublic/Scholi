@@ -211,6 +211,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 
 /* ── STARS ── */
 .stars{color:#F59E0B;font-size:.75rem;letter-spacing:1px}
+
+/* ── COUNTY + TOWN AUTOCOMPLETE ── */
+.county-select{width:100%;background:#fff;border:1.5px solid #D1D5DB;border-radius:8px;padding:11px 14px;font-size:.92rem;color:var(--text);cursor:pointer;outline:none;margin-bottom:10px}
+.county-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,107,94,.12)}
+.county-select.chosen{border-color:var(--accent);color:var(--accent);font-weight:600}
+.loc-wrap{position:relative;flex:1;min-width:0}
+.loc-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:50;overflow:hidden;max-height:280px;overflow-y:auto}
+.loc-option{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .12s;border-bottom:1px solid #F9F9F9}
+.loc-option:last-child{border-bottom:none}
+.loc-option:hover,.loc-option.focused{background:var(--accent-xl)}
+.loc-opt-icon{font-size:.85rem;flex-shrink:0;color:var(--text-muted)}
+.loc-opt-name{flex:1;font-size:.88rem;font-weight:600;color:var(--text)}
+.loc-opt-sub{font-size:.74rem;color:var(--text-muted);white-space:nowrap}
+.loc-option-postcode .loc-opt-name{color:var(--accent)}
+.loc-option-postcode .loc-opt-icon{color:var(--accent)}
+.search-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── FREE & FUNDED CHIP ── */
+.free-chip-row{margin-bottom:10px}
+.free-chip{display:inline-flex;align-items:center;gap:7px;background:var(--accent-xl);color:var(--accent);border:1.5px solid var(--accent);border-radius:20px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .18s}
+.free-chip:hover{background:var(--accent);color:#fff}
+.free-chip.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(27,107,94,.25)}
+
+/* ── NO-RESULTS REDESIGN ── */
+.no-remove-label{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:8px;margin-top:4px}
+.no-filter-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:14px}
+.no-filter-tag{background:var(--surface);border:1.5px solid var(--border-strong);border-radius:20px;padding:5px 12px;font-size:.8rem;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.no-filter-tag:hover{border-color:#EF4444;color:#EF4444;background:#FEF2F2}
+.no-edit-search{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:16px;transition:all .18s}
+.no-edit-search:hover{background:var(--accent-h)}
+.no-divider{width:40px;height:1px;background:var(--border);margin:16px auto}
 </style>
 </head>
 <body>
@@ -262,11 +293,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
     </div>
   </div>
 
-  <!-- STEP 2: WHERE + DISTANCE (combined) -->
+  <!-- STEP 2: WHERE + DISTANCE -->
   <div class="step-block">
     <div class="step-label"><span class="step-num">2</span>Where &amp; how far?</div>
+    <select class="county-select" id="countySelect" onchange="onCountyChange()">
+      <option value="">County or region (optional &ndash; narrows the list)&hellip;</option>
+    </select>
     <div class="where-row">
-      <input class="loc-input" id="areaInput" type="text" list="areaList" placeholder="Town, school name or postcode" autocomplete="off">
+      <div class="loc-wrap">
+        <input class="loc-input" id="areaInput" type="text" placeholder="Type a town or postcode&hellip;" autocomplete="off" oninput="onLocationInput()" onkeydown="onLocationKeydown(event)">
+        <div class="loc-dropdown" id="locDropdown"></div>
+      </div>
       <select class="dist-select" id="distSelect">
         <option value="5">Within 5 mi</option>
         <option value="10" selected>Within 10 mi</option>
@@ -274,29 +311,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
         <option value="0">Any distance</option>
       </select>
     </div>
-    <datalist id="areaList">
-      <option value="Guildford">
-      <option value="Woking">
-      <option value="Cobham">
-      <option value="Epsom">
-      <option value="Middlesbrough">
-      <option value="Stockton">
-      <option value="Redcar">
-    </datalist>
-    <div class="quick-chips">
-      <button class="quick-chip" onclick="useLocation('Guildford',51.2362,-0.5704)">Guildford</button>
-      <button class="quick-chip" onclick="useLocation('Woking',51.3190,-0.5600)">Woking</button>
-      <button class="quick-chip" onclick="useLocation('Cobham',51.3281,-0.4099)">Cobham</button>
-      <button class="quick-chip" onclick="useLocation('Epsom',51.3355,-0.2694)">Epsom</button>
-      <button class="quick-chip" onclick="useLocation('Middlesbrough',54.5741,-1.2346)">Middlesbrough</button>
-      <button class="quick-chip" onclick="useLocation('Stockton',54.5704,-1.3192)">Stockton</button>
-      <button class="quick-chip" onclick="useLocation('Redcar',54.6142,-1.0649)">Redcar</button>
-    </div>
   </div>
 
   <!-- STEP 3: NARROW IT DOWN -->
   <div class="step-block">
     <div class="step-label"><span class="step-num">3</span>Narrow it down <span style="font-size:.7rem;opacity:.6;text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
+    <div class="free-chip-row">
+      <button class="free-chip" id="freeChip" onclick="toggleFreeFilter()">&#127807; Free &amp; funded activities</button>
+    </div>
     <div class="filt-bar">
       <button class="filt-btn" id="filt-age-btn" onclick="togglePanel('filt-age')">
         <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
@@ -378,7 +400,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
         <label class="chip-label"><input type="checkbox" name="priceF" value="50-75" onchange="onChipChange()"><span class="chip">&pound;50&ndash;&pound;75</span></label>
         <label class="chip-label"><input type="checkbox" name="priceF" value="75-999" onchange="onChipChange()"><span class="chip">&pound;75+</span></label>
       </div>
-      <div class="filt-panel-title" style="margin-top:8px">Half day price</div>
+      <div class="filt-chips" style="margin:12px 0;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <label class="chip-label"><input type="checkbox" name="free" value="free" id="freeCheck" onchange="onChipChange();syncFreeChip()"><span class="chip" style="background:#E8F5F2;border-color:#1B6B5E;color:#1B6B5E;font-weight:700">&#127807; Free &amp; funded</span></label>
+      </div>
+      <div class="filt-panel-title">Half day price</div>
       <div class="filt-chips">
         <label class="chip-label"><input type="checkbox" name="priceH" value="0-15" onchange="onChipChange()"><span class="chip">Under &pound;15</span></label>
         <label class="chip-label"><input type="checkbox" name="priceH" value="15-25" onchange="onChipChange()"><span class="chip">&pound;15&ndash;&pound;25</span></label>
@@ -399,7 +424,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
   </div>
 
   <div class="search-btn-wrap">
-    <button class="search-btn" id="searchBtn" onclick="runSearch()">
+    <button class="search-btn" id="searchBtn" onclick="runSearch()" disabled>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       Search
     </button>
@@ -427,12 +452,12 @@ const P=[
 {id:13,name:"Young Innovators Lab",cat:"Learning",desc:"App development, AI and digital entrepreneurship for teens. Leave with a working prototype of your own idea.",ageMin:11,ageMax:16,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:60,weekdays:true,weekends:false,insured:true,founded:2020,addr:"South Street",town:"Farnham",postcode:"GU9 7QU",web:"younginnovatorslab.co.uk",phone:"01252 667788",email:"hello@younginnovatorslab.co.uk",rP:4.9,rPN:29,rK:4.8,rKN:24,lat:51.2143,lng:-0.7981},
 {id:14,name:"Explorer Holiday Camp",cat:"General",desc:"Team games, archery, den building and outdoor adventure. Fully supervised, all equipment provided.",ageMin:6,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:42,weekdays:true,weekends:false,insured:true,founded:2010,addr:"Givons Grove",town:"Leatherhead",postcode:"KT22 8SD",web:"explorercamp.co.uk",phone:"01372 334455",email:"info@explorercamp.co.uk",rP:4.7,rPN:143,rK:4.9,rKN:118,lat:51.2952,lng:-0.3276},
 {id:15,name:"Surrey Adventure Camp",cat:"General",desc:"Bushcraft, archery, orienteering and low-ropes in a stunning Surrey woodland setting.",ageMin:8,ageMax:15,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:50,weekdays:true,weekends:false,insured:true,founded:2012,addr:"Horsham Road",town:"Dorking",postcode:"RH4 2JP",web:"surreyadventurecamp.co.uk",phone:"01306 556677",email:"hello@surreyadventurecamp.co.uk",rP:4.8,rPN:97,rK:5.0,rKN:82,lat:51.2329,lng:-0.3341},
-{id:16,name:"Guildford Kids Camp",cat:"General",desc:"The original Guildford holiday camp. Swimming, arts, sports and games — something for everyone every day.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:22,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2003,addr:"Spectrum Leisure Complex, Parkway",town:"Guildford",postcode:"GU1 1UP",web:"guildfordkidscamp.co.uk",phone:"01483 778899",email:"camp@guildfordkidscamp.co.uk",rP:4.6,rPN:289,rK:4.7,rKN:234,lat:51.2362,lng:-0.5704},
+{id:16,name:"Guildford Kids Camp",free:true,cat:"General",desc:"The original Guildford holiday camp. Swimming, arts, sports and games — something for everyone every day.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:22,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2003,addr:"Spectrum Leisure Complex, Parkway",town:"Guildford",postcode:"GU1 1UP",web:"guildfordkidscamp.co.uk",phone:"01483 778899",email:"camp@guildfordkidscamp.co.uk",rP:4.6,rPN:289,rK:4.7,rKN:234,lat:51.2362,lng:-0.5704},
 {id:17,name:"Active Holidays Surrey",cat:"General",desc:"Trampolining, gymnastics, multi-sport and team challenges. Half or full day to suit your schedule.",ageMin:5,ageMax:13,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:20,priceFull:35,weekdays:true,weekends:false,insured:true,founded:2014,addr:"Woking Leisure Centre, Woking Park",town:"Woking",postcode:"GU22 9BA",web:"activeholidayssurrey.co.uk",phone:"01483 223344",email:"info@activeholidayssurrey.co.uk",rP:4.5,rPN:112,rK:4.8,rKN:89,lat:51.3190,lng:-0.5600},
 {id:18,name:"Leatherhead Leisure Camp",cat:"General",desc:"Fun packed days including swimming, trampolining and arts and crafts. Great value, great staff.",ageMin:5,ageMax:12,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:18,priceFull:32,weekdays:true,weekends:false,insured:true,founded:2008,addr:"Guildford Road",town:"Leatherhead",postcode:"KT22 9BT",web:"leatherheadleisure.co.uk",phone:"01372 556677",email:"camp@leatherheadleisure.co.uk",rP:4.4,rPN:88,rK:4.6,rKN:71,lat:51.2952,lng:-0.3276},
 {id:19,name:"Cobham Cricket Academy",cat:"Sports",desc:"Structured cricket coaching for all abilities. Batting, bowling and fielding clinics with professional coaches.",ageMin:8,ageMax:16,gender:"Boys",sessions:["Half day"],priceHalf:24,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2010,addr:"Old Street Hill",town:"Cobham",postcode:"KT11 2AF",web:"cobhamcricket.co.uk",phone:"01932 445566",email:"junior@cobhamcricket.co.uk",rP:4.7,rPN:52,rK:4.8,rKN:44,lat:51.3281,lng:-0.4099},
 {id:20,name:"Epsom Gymnastics Club",cat:"Sports",desc:"Recreational and artistic gymnastics. All levels welcome, qualified British Gymnastics coaches.",ageMin:4,ageMax:14,gender:"Mixed",sessions:["Half day"],priceHalf:20,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2006,addr:"Ashley Road",town:"Epsom",postcode:"KT18 5BS",web:"epsomgym.co.uk",phone:"01372 778899",email:"info@epsomgym.co.uk",rP:4.8,rPN:134,rK:4.9,rKN:112,lat:51.3355,lng:-0.2694},
-{id:21,name:"Middlesbrough FC Foundation Camp",cat:"Sports",desc:"Official Middlesbrough FC holiday camp. Coached by FA-qualified staff in the MFC way.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2005,addr:"Riverside Stadium, Middlesbrough",town:"Middlesbrough",postcode:"TS3 6RS",web:"mfcfoundation.co.uk",phone:"01642 334455",email:"camps@mfcfoundation.co.uk",rP:4.8,rPN:267,rK:4.9,rKN:198,lat:54.5741,lng:-1.2346},
+{id:21,name:"Middlesbrough FC Foundation Camp",free:true,cat:"Sports",desc:"Official Middlesbrough FC holiday camp. Coached by FA-qualified staff in the MFC way.",ageMin:5,ageMax:14,gender:"Mixed",sessions:["Full day"],priceHalf:null,priceFull:38,weekdays:true,weekends:false,insured:true,founded:2005,addr:"Riverside Stadium, Middlesbrough",town:"Middlesbrough",postcode:"TS3 6RS",web:"mfcfoundation.co.uk",phone:"01642 334455",email:"camps@mfcfoundation.co.uk",rP:4.8,rPN:267,rK:4.9,rKN:198,lat:54.5741,lng:-1.2346},
 {id:22,name:"Teesside Gymnastics Centre",cat:"Sports",desc:"Recreational gymnastics, acrobatics and trampolining. All ages and abilities, friendly qualified coaches.",ageMin:4,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:18,priceFull:32,weekdays:true,weekends:true,insured:true,founded:2003,addr:"Haverton Hill Road",town:"Stockton",postcode:"TS23 1PD",web:"teessidegymnastics.co.uk",phone:"01642 556677",email:"info@teessidegymnastics.co.uk",rP:4.7,rPN:189,rK:4.8,rKN:145,lat:54.5704,lng:-1.3192},
 {id:23,name:"Middlesbrough Drama Workshop",cat:"Drama",desc:"Fun and energetic drama sessions. Devising, performance and voice work in a purpose-built studio.",ageMin:7,ageMax:16,gender:"Mixed",sessions:["Half day","Full day"],priceHalf:16,priceFull:28,weekdays:true,weekends:false,insured:true,founded:2011,addr:"Corporation Road",town:"Middlesbrough",postcode:"TS1 2RL",web:"middramamworkshop.co.uk",phone:"01642 778899",email:"hello@middramamworkshop.co.uk",rP:4.6,rPN:74,rK:4.7,rKN:62,lat:54.5741,lng:-1.2346},
 {id:24,name:"Teesside Dance Academy",cat:"Dance",desc:"Contemporary, street and hip-hop dance. End-of-week showcase for parents and friends.",ageMin:6,ageMax:16,gender:"Mixed",sessions:["Half day"],priceHalf:15,priceFull:null,weekdays:true,weekends:true,insured:true,founded:2013,addr:"Linthorpe Road",town:"Middlesbrough",postcode:"TS5 6AD",web:"teessidedance.co.uk",phone:"01642 223344",email:"info@teessidedance.co.uk",rP:4.8,rPN:113,rK:4.9,rKN:94,lat:54.5741,lng:-1.2346},
@@ -545,46 +570,463 @@ function getDateRange(){
   return{from:f?new Date(f):null,to:t?new Date(t):null,label:label};
 }
 
-// ── GEO LOOKUP ────────────────────────────────────────────────────────────
-var GEO_CACHE={
-  'guildford':{lat:51.2362,lng:-0.5704,label:'Guildford'},
-  'woking':{lat:51.3190,lng:-0.5600,label:'Woking'},
-  'cobham':{lat:51.3281,lng:-0.4099,label:'Cobham'},
-  'epsom':{lat:51.3355,lng:-0.2694,label:'Epsom'},
-  'dorking':{lat:51.2329,lng:-0.3341,label:'Dorking'},
-  'farnham':{lat:51.2143,lng:-0.7981,label:'Farnham'},
-  'leatherhead':{lat:51.2952,lng:-0.3276,label:'Leatherhead'},
-  'middlesbrough':{lat:54.5741,lng:-1.2346,label:'Middlesbrough'},
-  'stockton':{lat:54.5704,lng:-1.3192,label:'Stockton'},
-  'redcar':{lat:54.6142,lng:-1.0649,label:'Redcar'},
-  'hartlepool':{lat:54.6853,lng:-1.2089,label:'Hartlepool'},
-  'darlington':{lat:54.5236,lng:-1.5546,label:'Darlington'},
-  'whitby':{lat:54.4844,lng:-0.6146,label:'Whitby'}
-};
-function useLocation(label,lat,lng){
-  document.getElementById('areaInput').value=label;
-  lastGeo={lat:lat,lng:lng,label:label};
+// ── TOWNS DATA ────────────────────────────────────────────────────────────
+var TOWNS=[
+// ENGLAND
+{n:'Bedford',c:'Bedfordshire',na:'England',lat:52.1365,lng:-0.4668},
+{n:'Luton',c:'Bedfordshire',na:'England',lat:51.8787,lng:-0.4200},
+{n:'Dunstable',c:'Bedfordshire',na:'England',lat:51.8862,lng:-0.5222},
+{n:'Reading',c:'Berkshire',na:'England',lat:51.4543,lng:-0.9781},
+{n:'Slough',c:'Berkshire',na:'England',lat:51.5105,lng:-0.5950},
+{n:'Windsor',c:'Berkshire',na:'England',lat:51.4839,lng:-0.6044},
+{n:'Bracknell',c:'Berkshire',na:'England',lat:51.4154,lng:-0.7536},
+{n:'Maidenhead',c:'Berkshire',na:'England',lat:51.5232,lng:-0.7194},
+{n:'Newbury',c:'Berkshire',na:'England',lat:51.4012,lng:-1.3227},
+{n:'Wokingham',c:'Berkshire',na:'England',lat:51.4104,lng:-0.8351},
+{n:'Bristol',c:'Bristol',na:'England',lat:51.4545,lng:-2.5879},
+{n:'Milton Keynes',c:'Buckinghamshire',na:'England',lat:52.0406,lng:-0.7594},
+{n:'Aylesbury',c:'Buckinghamshire',na:'England',lat:51.8168,lng:-0.8124},
+{n:'High Wycombe',c:'Buckinghamshire',na:'England',lat:51.6287,lng:-0.7482},
+{n:'Marlow',c:'Buckinghamshire',na:'England',lat:51.5718,lng:-0.7744},
+{n:'Chesham',c:'Buckinghamshire',na:'England',lat:51.7054,lng:-0.6097},
+{n:'Amersham',c:'Buckinghamshire',na:'England',lat:51.6740,lng:-0.6076},
+{n:'Cambridge',c:'Cambridgeshire',na:'England',lat:52.2053,lng:0.1218},
+{n:'Peterborough',c:'Cambridgeshire',na:'England',lat:52.5695,lng:-0.2405},
+{n:'Ely',c:'Cambridgeshire',na:'England',lat:52.3997,lng:0.2620},
+{n:'Huntingdon',c:'Cambridgeshire',na:'England',lat:52.3326,lng:-0.1823},
+{n:'Chester',c:'Cheshire',na:'England',lat:53.1937,lng:-2.8931},
+{n:'Warrington',c:'Cheshire',na:'England',lat:53.3900,lng:-2.5970},
+{n:'Crewe',c:'Cheshire',na:'England',lat:53.0984,lng:-2.4445},
+{n:'Macclesfield',c:'Cheshire',na:'England',lat:53.2594,lng:-2.1270},
+{n:'Ellesmere Port',c:'Cheshire',na:'England',lat:53.2786,lng:-2.8973},
+{n:'Northwich',c:'Cheshire',na:'England',lat:53.2590,lng:-2.5180},
+{n:'Runcorn',c:'Cheshire',na:'England',lat:53.3421,lng:-2.7340},
+{n:'Wilmslow',c:'Cheshire',na:'England',lat:53.3305,lng:-2.2340},
+{n:'Truro',c:'Cornwall',na:'England',lat:50.2632,lng:-5.0510},
+{n:'Penzance',c:'Cornwall',na:'England',lat:50.1186,lng:-5.5372},
+{n:'Newquay',c:'Cornwall',na:'England',lat:50.4144,lng:-5.0757},
+{n:'Falmouth',c:'Cornwall',na:'England',lat:50.1527,lng:-5.0688},
+{n:'St Austell',c:'Cornwall',na:'England',lat:50.3401,lng:-4.7921},
+{n:'Bodmin',c:'Cornwall',na:'England',lat:50.4717,lng:-4.7192},
+{n:'Carlisle',c:'Cumbria',na:'England',lat:54.8951,lng:-2.9382},
+{n:'Kendal',c:'Cumbria',na:'England',lat:54.3218,lng:-2.7440},
+{n:'Barrow-in-Furness',c:'Cumbria',na:'England',lat:54.1109,lng:-3.2264},
+{n:'Penrith',c:'Cumbria',na:'England',lat:54.6640,lng:-2.7524},
+{n:'Workington',c:'Cumbria',na:'England',lat:54.6431,lng:-3.5496},
+{n:'Whitehaven',c:'Cumbria',na:'England',lat:54.5514,lng:-3.5879},
+{n:'Derby',c:'Derbyshire',na:'England',lat:52.9218,lng:-1.4784},
+{n:'Chesterfield',c:'Derbyshire',na:'England',lat:53.2350,lng:-1.4210},
+{n:'Ilkeston',c:'Derbyshire',na:'England',lat:52.9710,lng:-1.3090},
+{n:'Buxton',c:'Derbyshire',na:'England',lat:53.2588,lng:-1.9099},
+{n:'Matlock',c:'Derbyshire',na:'England',lat:53.1427,lng:-1.5551},
+{n:'Exeter',c:'Devon',na:'England',lat:50.7184,lng:-3.5339},
+{n:'Plymouth',c:'Devon',na:'England',lat:50.3755,lng:-4.1427},
+{n:'Torquay',c:'Devon',na:'England',lat:50.4620,lng:-3.5252},
+{n:'Paignton',c:'Devon',na:'England',lat:50.4347,lng:-3.5630},
+{n:'Barnstaple',c:'Devon',na:'England',lat:51.0817,lng:-4.0608},
+{n:'Exmouth',c:'Devon',na:'England',lat:50.6200,lng:-3.4110},
+{n:'Newton Abbot',c:'Devon',na:'England',lat:50.5268,lng:-3.6094},
+{n:'Bournemouth',c:'Dorset',na:'England',lat:50.7192,lng:-1.8808},
+{n:'Poole',c:'Dorset',na:'England',lat:50.7150,lng:-1.9870},
+{n:'Dorchester',c:'Dorset',na:'England',lat:50.7154,lng:-2.4363},
+{n:'Weymouth',c:'Dorset',na:'England',lat:50.6140,lng:-2.4584},
+{n:'Christchurch',c:'Dorset',na:'England',lat:50.7356,lng:-1.7803},
+{n:'Durham',c:'County Durham',na:'England',lat:54.7761,lng:-1.5733},
+{n:'Darlington',c:'County Durham',na:'England',lat:54.5236,lng:-1.5546},
+{n:'Hartlepool',c:'County Durham',na:'England',lat:54.6853,lng:-1.2089},
+{n:'Stockton-on-Tees',c:'County Durham',na:'England',lat:54.5704,lng:-1.3192},
+{n:'Middlesbrough',c:'County Durham',na:'England',lat:54.5741,lng:-1.2346},
+{n:'Redcar',c:'County Durham',na:'England',lat:54.6142,lng:-1.0649},
+{n:'Hull',c:'East Riding of Yorkshire',na:'England',lat:53.7457,lng:-0.3367},
+{n:'Beverley',c:'East Riding of Yorkshire',na:'England',lat:53.8400,lng:-0.4290},
+{n:'Bridlington',c:'East Riding of Yorkshire',na:'England',lat:54.0833,lng:-0.1929},
+{n:'Goole',c:'East Riding of Yorkshire',na:'England',lat:53.7038,lng:-0.8719},
+{n:'Brighton',c:'East Sussex',na:'England',lat:50.8225,lng:-0.1372},
+{n:'Hove',c:'East Sussex',na:'England',lat:50.8279,lng:-0.1683},
+{n:'Eastbourne',c:'East Sussex',na:'England',lat:50.7680,lng:0.2902},
+{n:'Hastings',c:'East Sussex',na:'England',lat:50.8549,lng:0.5726},
+{n:'Lewes',c:'East Sussex',na:'England',lat:50.8740,lng:0.0112},
+{n:'Chelmsford',c:'Essex',na:'England',lat:51.7356,lng:0.4685},
+{n:'Colchester',c:'Essex',na:'England',lat:51.8959,lng:0.8919},
+{n:'Southend-on-Sea',c:'Essex',na:'England',lat:51.5361,lng:0.7153},
+{n:'Basildon',c:'Essex',na:'England',lat:51.5769,lng:0.4901},
+{n:'Harlow',c:'Essex',na:'England',lat:51.7722,lng:0.0912},
+{n:'Braintree',c:'Essex',na:'England',lat:51.8777,lng:0.5497},
+{n:'Clacton-on-Sea',c:'Essex',na:'England',lat:51.7922,lng:1.1537},
+{n:'Gloucester',c:'Gloucestershire',na:'England',lat:51.8650,lng:-2.2380},
+{n:'Cheltenham',c:'Gloucestershire',na:'England',lat:51.9000,lng:-2.0724},
+{n:'Stroud',c:'Gloucestershire',na:'England',lat:51.7457,lng:-2.2139},
+{n:'Cirencester',c:'Gloucestershire',na:'England',lat:51.7197,lng:-1.9689},
+{n:'London',c:'Greater London',na:'England',lat:51.5074,lng:-0.1278},
+{n:'Croydon',c:'Greater London',na:'England',lat:51.3762,lng:-0.0982},
+{n:'Bromley',c:'Greater London',na:'England',lat:51.4059,lng:0.0155},
+{n:'Enfield',c:'Greater London',na:'England',lat:51.6538,lng:-0.0799},
+{n:'Kingston upon Thames',c:'Greater London',na:'England',lat:51.4103,lng:-0.3031},
+{n:'Richmond',c:'Greater London',na:'England',lat:51.4613,lng:-0.3037},
+{n:'Wimbledon',c:'Greater London',na:'England',lat:51.4214,lng:-0.2064},
+{n:'Ealing',c:'Greater London',na:'England',lat:51.5130,lng:-0.3089},
+{n:'Harrow',c:'Greater London',na:'England',lat:51.5793,lng:-0.3335},
+{n:'Barnet',c:'Greater London',na:'England',lat:51.6252,lng:-0.1517},
+{n:'Manchester',c:'Greater Manchester',na:'England',lat:53.4808,lng:-2.2426},
+{n:'Salford',c:'Greater Manchester',na:'England',lat:53.4872,lng:-2.2901},
+{n:'Stockport',c:'Greater Manchester',na:'England',lat:53.4083,lng:-2.1494},
+{n:'Bolton',c:'Greater Manchester',na:'England',lat:53.5780,lng:-2.4282},
+{n:'Bury',c:'Greater Manchester',na:'England',lat:53.5933,lng:-2.2975},
+{n:'Oldham',c:'Greater Manchester',na:'England',lat:53.5409,lng:-2.1114},
+{n:'Rochdale',c:'Greater Manchester',na:'England',lat:53.6138,lng:-2.1605},
+{n:'Wigan',c:'Greater Manchester',na:'England',lat:53.5450,lng:-2.6375},
+{n:'Altrincham',c:'Greater Manchester',na:'England',lat:53.3838,lng:-2.3529},
+{n:'Southampton',c:'Hampshire',na:'England',lat:50.9097,lng:-1.4044},
+{n:'Portsmouth',c:'Hampshire',na:'England',lat:50.8198,lng:-1.0880},
+{n:'Winchester',c:'Hampshire',na:'England',lat:51.0632,lng:-1.3080},
+{n:'Basingstoke',c:'Hampshire',na:'England',lat:51.2665,lng:-1.0876},
+{n:'Eastleigh',c:'Hampshire',na:'England',lat:50.9666,lng:-1.3500},
+{n:'Fareham',c:'Hampshire',na:'England',lat:50.8524,lng:-1.1796},
+{n:'Gosport',c:'Hampshire',na:'England',lat:50.7967,lng:-1.1268},
+{n:'Andover',c:'Hampshire',na:'England',lat:51.2080,lng:-1.4841},
+{n:'Hereford',c:'Herefordshire',na:'England',lat:52.0566,lng:-2.7156},
+{n:'Watford',c:'Hertfordshire',na:'England',lat:51.6565,lng:-0.3956},
+{n:'St Albans',c:'Hertfordshire',na:'England',lat:51.7550,lng:-0.3360},
+{n:'Stevenage',c:'Hertfordshire',na:'England',lat:51.9022,lng:-0.2033},
+{n:'Hemel Hempstead',c:'Hertfordshire',na:'England',lat:51.7538,lng:-0.4482},
+{n:'Hatfield',c:'Hertfordshire',na:'England',lat:51.7630,lng:-0.2280},
+{n:'Welwyn Garden City',c:'Hertfordshire',na:'England',lat:51.8025,lng:-0.2087},
+{n:'Bishops Stortford',c:'Hertfordshire',na:'England',lat:51.8721,lng:0.1611},
+{n:'Canterbury',c:'Kent',na:'England',lat:51.2802,lng:1.0789},
+{n:'Maidstone',c:'Kent',na:'England',lat:51.2720,lng:0.5290},
+{n:'Chatham',c:'Kent',na:'England',lat:51.3781,lng:0.5275},
+{n:'Dartford',c:'Kent',na:'England',lat:51.4467,lng:0.2178},
+{n:'Sevenoaks',c:'Kent',na:'England',lat:51.2757,lng:0.1894},
+{n:'Tonbridge',c:'Kent',na:'England',lat:51.1975,lng:0.2744},
+{n:'Tunbridge Wells',c:'Kent',na:'England',lat:51.1323,lng:0.2634},
+{n:'Folkestone',c:'Kent',na:'England',lat:51.0809,lng:1.1713},
+{n:'Dover',c:'Kent',na:'England',lat:51.1295,lng:1.3089},
+{n:'Ashford',c:'Kent',na:'England',lat:51.1465,lng:0.8694},
+{n:'Margate',c:'Kent',na:'England',lat:51.3813,lng:1.3862},
+{n:'Preston',c:'Lancashire',na:'England',lat:53.7631,lng:-2.7031},
+{n:'Blackpool',c:'Lancashire',na:'England',lat:53.8175,lng:-3.0357},
+{n:'Burnley',c:'Lancashire',na:'England',lat:53.7891,lng:-2.2474},
+{n:'Lancaster',c:'Lancashire',na:'England',lat:54.0466,lng:-2.8007},
+{n:'Blackburn',c:'Lancashire',na:'England',lat:53.7480,lng:-2.4825},
+{n:'Chorley',c:'Lancashire',na:'England',lat:53.6532,lng:-2.6329},
+{n:'Lytham St Annes',c:'Lancashire',na:'England',lat:53.7469,lng:-2.9973},
+{n:'Leicester',c:'Leicestershire',na:'England',lat:52.6369,lng:-1.1398},
+{n:'Loughborough',c:'Leicestershire',na:'England',lat:52.7719,lng:-1.2049},
+{n:'Hinckley',c:'Leicestershire',na:'England',lat:52.5388,lng:-1.3726},
+{n:'Melton Mowbray',c:'Leicestershire',na:'England',lat:52.7641,lng:-0.8841},
+{n:'Lincoln',c:'Lincolnshire',na:'England',lat:53.2307,lng:-0.5406},
+{n:'Boston',c:'Lincolnshire',na:'England',lat:52.9751,lng:-0.0217},
+{n:'Grimsby',c:'Lincolnshire',na:'England',lat:53.5676,lng:-0.0796},
+{n:'Grantham',c:'Lincolnshire',na:'England',lat:52.9120,lng:-0.6408},
+{n:'Skegness',c:'Lincolnshire',na:'England',lat:53.1435,lng:0.3366},
+{n:'Liverpool',c:'Merseyside',na:'England',lat:53.4084,lng:-2.9916},
+{n:'Birkenhead',c:'Merseyside',na:'England',lat:53.3934,lng:-3.0133},
+{n:'St Helens',c:'Merseyside',na:'England',lat:53.4541,lng:-2.7369},
+{n:'Southport',c:'Merseyside',na:'England',lat:53.6450,lng:-3.0062},
+{n:'Wallasey',c:'Merseyside',na:'England',lat:53.4189,lng:-3.0589},
+{n:'Norwich',c:'Norfolk',na:'England',lat:52.6309,lng:1.2974},
+{n:"King's Lynn",c:'Norfolk',na:'England',lat:52.7538,lng:0.3990},
+{n:'Great Yarmouth',c:'Norfolk',na:'England',lat:52.6065,lng:1.7299},
+{n:'Thetford',c:'Norfolk',na:'England',lat:52.4145,lng:0.7443},
+{n:'York',c:'North Yorkshire',na:'England',lat:53.9591,lng:-1.0815},
+{n:'Harrogate',c:'North Yorkshire',na:'England',lat:53.9920,lng:-1.5379},
+{n:'Scarborough',c:'North Yorkshire',na:'England',lat:54.2800,lng:-0.4030},
+{n:'Northallerton',c:'North Yorkshire',na:'England',lat:54.3360,lng:-1.4325},
+{n:'Whitby',c:'North Yorkshire',na:'England',lat:54.4844,lng:-0.6146},
+{n:'Skipton',c:'North Yorkshire',na:'England',lat:53.9622,lng:-2.0159},
+{n:'Northampton',c:'Northamptonshire',na:'England',lat:52.2405,lng:-0.9027},
+{n:'Kettering',c:'Northamptonshire',na:'England',lat:52.3978,lng:-0.7258},
+{n:'Corby',c:'Northamptonshire',na:'England',lat:52.4893,lng:-0.6989},
+{n:'Wellingborough',c:'Northamptonshire',na:'England',lat:52.3019,lng:-0.6936},
+{n:'Newcastle upon Tyne',c:'Tyne and Wear',na:'England',lat:54.9783,lng:-1.6178},
+{n:'Sunderland',c:'Tyne and Wear',na:'England',lat:54.9058,lng:-1.3818},
+{n:'South Shields',c:'Tyne and Wear',na:'England',lat:54.9953,lng:-1.4321},
+{n:'Gateshead',c:'Tyne and Wear',na:'England',lat:54.9607,lng:-1.6024},
+{n:'Morpeth',c:'Northumberland',na:'England',lat:55.1676,lng:-1.6843},
+{n:'Berwick-upon-Tweed',c:'Northumberland',na:'England',lat:55.7714,lng:-2.0032},
+{n:'Hexham',c:'Northumberland',na:'England',lat:54.9726,lng:-2.0981},
+{n:'Nottingham',c:'Nottinghamshire',na:'England',lat:52.9540,lng:-1.1550},
+{n:'Newark',c:'Nottinghamshire',na:'England',lat:53.0762,lng:-0.8132},
+{n:'Mansfield',c:'Nottinghamshire',na:'England',lat:53.1435,lng:-1.1967},
+{n:'Worksop',c:'Nottinghamshire',na:'England',lat:53.3041,lng:-1.1248},
+{n:'Oxford',c:'Oxfordshire',na:'England',lat:51.7520,lng:-1.2577},
+{n:'Banbury',c:'Oxfordshire',na:'England',lat:52.0632,lng:-1.3361},
+{n:'Witney',c:'Oxfordshire',na:'England',lat:51.7838,lng:-1.4852},
+{n:'Abingdon',c:'Oxfordshire',na:'England',lat:51.6710,lng:-1.2823},
+{n:'Didcot',c:'Oxfordshire',na:'England',lat:51.6060,lng:-1.2415},
+{n:'Shrewsbury',c:'Shropshire',na:'England',lat:52.7076,lng:-2.7524},
+{n:'Telford',c:'Shropshire',na:'England',lat:52.6766,lng:-2.4470},
+{n:'Oswestry',c:'Shropshire',na:'England',lat:52.8607,lng:-3.0534},
+{n:'Bath',c:'Somerset',na:'England',lat:51.3758,lng:-2.3599},
+{n:'Taunton',c:'Somerset',na:'England',lat:51.0158,lng:-3.1047},
+{n:'Weston-super-Mare',c:'Somerset',na:'England',lat:51.3462,lng:-2.9770},
+{n:'Yeovil',c:'Somerset',na:'England',lat:50.9427,lng:-2.6343},
+{n:'Bridgwater',c:'Somerset',na:'England',lat:51.1276,lng:-2.9929},
+{n:'Sheffield',c:'South Yorkshire',na:'England',lat:53.3811,lng:-1.4701},
+{n:'Doncaster',c:'South Yorkshire',na:'England',lat:53.5226,lng:-1.1286},
+{n:'Rotherham',c:'South Yorkshire',na:'England',lat:53.4326,lng:-1.3627},
+{n:'Barnsley',c:'South Yorkshire',na:'England',lat:53.5520,lng:-1.4797},
+{n:'Stoke-on-Trent',c:'Staffordshire',na:'England',lat:53.0027,lng:-2.1794},
+{n:'Stafford',c:'Staffordshire',na:'England',lat:52.8070,lng:-2.1175},
+{n:'Tamworth',c:'Staffordshire',na:'England',lat:52.6341,lng:-1.6957},
+{n:'Lichfield',c:'Staffordshire',na:'England',lat:52.6830,lng:-1.8280},
+{n:'Burton upon Trent',c:'Staffordshire',na:'England',lat:52.8019,lng:-1.6389},
+{n:'Cannock',c:'Staffordshire',na:'England',lat:52.6907,lng:-2.0278},
+{n:'Ipswich',c:'Suffolk',na:'England',lat:52.0567,lng:1.1482},
+{n:'Bury St Edmunds',c:'Suffolk',na:'England',lat:52.2466,lng:0.7144},
+{n:'Lowestoft',c:'Suffolk',na:'England',lat:52.4748,lng:1.7528},
+{n:'Guildford',c:'Surrey',na:'England',lat:51.2362,lng:-0.5704},
+{n:'Woking',c:'Surrey',na:'England',lat:51.3190,lng:-0.5600},
+{n:'Epsom',c:'Surrey',na:'England',lat:51.3355,lng:-0.2694},
+{n:'Redhill',c:'Surrey',na:'England',lat:51.2400,lng:-0.1729},
+{n:'Reigate',c:'Surrey',na:'England',lat:51.2369,lng:-0.2002},
+{n:'Farnham',c:'Surrey',na:'England',lat:51.2143,lng:-0.7981},
+{n:'Leatherhead',c:'Surrey',na:'England',lat:51.2952,lng:-0.3276},
+{n:'Camberley',c:'Surrey',na:'England',lat:51.3369,lng:-0.7388},
+{n:'Staines-upon-Thames',c:'Surrey',na:'England',lat:51.4330,lng:-0.5040},
+{n:'Weybridge',c:'Surrey',na:'England',lat:51.3680,lng:-0.3560},
+{n:'Cobham',c:'Surrey',na:'England',lat:51.3281,lng:-0.4099},
+{n:'Dorking',c:'Surrey',na:'England',lat:51.2329,lng:-0.3341},
+{n:'Godalming',c:'Surrey',na:'England',lat:51.1845,lng:-0.6151},
+{n:'Esher',c:'Surrey',na:'England',lat:51.3693,lng:-0.3666},
+{n:'Walton-on-Thames',c:'Surrey',na:'England',lat:51.3876,lng:-0.4131},
+{n:'Haslemere',c:'Surrey',na:'England',lat:51.0893,lng:-0.7106},
+{n:'Warwick',c:'Warwickshire',na:'England',lat:52.2854,lng:-1.5852},
+{n:'Leamington Spa',c:'Warwickshire',na:'England',lat:52.2917,lng:-1.5369},
+{n:'Rugby',c:'Warwickshire',na:'England',lat:52.3711,lng:-1.2654},
+{n:'Stratford-upon-Avon',c:'Warwickshire',na:'England',lat:52.1927,lng:-1.7084},
+{n:'Nuneaton',c:'Warwickshire',na:'England',lat:52.5234,lng:-1.4653},
+{n:'Birmingham',c:'West Midlands',na:'England',lat:52.4862,lng:-1.8904},
+{n:'Coventry',c:'West Midlands',na:'England',lat:52.4068,lng:-1.5197},
+{n:'Wolverhampton',c:'West Midlands',na:'England',lat:52.5862,lng:-2.1288},
+{n:'Dudley',c:'West Midlands',na:'England',lat:52.5127,lng:-2.0809},
+{n:'Walsall',c:'West Midlands',na:'England',lat:52.5862,lng:-1.9828},
+{n:'West Bromwich',c:'West Midlands',na:'England',lat:52.5190,lng:-1.9846},
+{n:'Solihull',c:'West Midlands',na:'England',lat:52.4130,lng:-1.7780},
+{n:'Worthing',c:'West Sussex',na:'England',lat:50.8120,lng:-0.3629},
+{n:'Crawley',c:'West Sussex',na:'England',lat:51.1092,lng:-0.1872},
+{n:'Horsham',c:'West Sussex',na:'England',lat:51.0621,lng:-0.3249},
+{n:'Chichester',c:'West Sussex',na:'England',lat:50.8365,lng:-0.7792},
+{n:'Bognor Regis',c:'West Sussex',na:'England',lat:50.7825,lng:-0.6766},
+{n:'Haywards Heath',c:'West Sussex',na:'England',lat:51.0040,lng:-0.1038},
+{n:'Leeds',c:'West Yorkshire',na:'England',lat:53.8008,lng:-1.5491},
+{n:'Bradford',c:'West Yorkshire',na:'England',lat:53.7960,lng:-1.7594},
+{n:'Huddersfield',c:'West Yorkshire',na:'England',lat:53.6458,lng:-1.7852},
+{n:'Halifax',c:'West Yorkshire',na:'England',lat:53.7248,lng:-1.8639},
+{n:'Wakefield',c:'West Yorkshire',na:'England',lat:53.6833,lng:-1.5056},
+{n:'Dewsbury',c:'West Yorkshire',na:'England',lat:53.6911,lng:-1.6312},
+{n:'Keighley',c:'West Yorkshire',na:'England',lat:53.8683,lng:-1.9110},
+{n:'Swindon',c:'Wiltshire',na:'England',lat:51.5608,lng:-1.7857},
+{n:'Salisbury',c:'Wiltshire',na:'England',lat:51.0693,lng:-1.7946},
+{n:'Chippenham',c:'Wiltshire',na:'England',lat:51.4587,lng:-2.1175},
+{n:'Trowbridge',c:'Wiltshire',na:'England',lat:51.3197,lng:-2.2077},
+{n:'Worcester',c:'Worcestershire',na:'England',lat:52.1920,lng:-2.2204},
+{n:'Redditch',c:'Worcestershire',na:'England',lat:52.3063,lng:-1.9454},
+{n:'Kidderminster',c:'Worcestershire',na:'England',lat:52.3868,lng:-2.2491},
+{n:'Malvern',c:'Worcestershire',na:'England',lat:52.1163,lng:-2.3264},
+// WALES
+{n:'Cardiff',c:'Cardiff',na:'Wales',lat:51.4816,lng:-3.1791},
+{n:'Swansea',c:'Swansea',na:'Wales',lat:51.6214,lng:-3.9436},
+{n:'Newport',c:'Newport',na:'Wales',lat:51.5842,lng:-2.9977},
+{n:'Wrexham',c:'Wrexham',na:'Wales',lat:53.0437,lng:-2.9922},
+{n:'Pontypridd',c:'Rhondda Cynon Taf',na:'Wales',lat:51.6018,lng:-3.3430},
+{n:'Merthyr Tydfil',c:'Merthyr Tydfil',na:'Wales',lat:51.7436,lng:-3.3761},
+{n:'Bridgend',c:'Bridgend',na:'Wales',lat:51.5054,lng:-3.5781},
+{n:'Caerphilly',c:'Caerphilly',na:'Wales',lat:51.5773,lng:-3.2198},
+{n:'Barry',c:'Vale of Glamorgan',na:'Wales',lat:51.3990,lng:-3.2836},
+{n:'Neath',c:'Neath Port Talbot',na:'Wales',lat:51.6617,lng:-3.8065},
+{n:'Port Talbot',c:'Neath Port Talbot',na:'Wales',lat:51.5934,lng:-3.7888},
+{n:'Llanelli',c:'Carmarthenshire',na:'Wales',lat:51.6842,lng:-4.1624},
+{n:'Carmarthen',c:'Carmarthenshire',na:'Wales',lat:51.8586,lng:-4.3126},
+{n:'Aberystwyth',c:'Ceredigion',na:'Wales',lat:52.4153,lng:-4.0829},
+{n:'Haverfordwest',c:'Pembrokeshire',na:'Wales',lat:51.8021,lng:-4.9706},
+{n:'Pembroke',c:'Pembrokeshire',na:'Wales',lat:51.6741,lng:-4.9174},
+{n:'Llandudno',c:'Conwy',na:'Wales',lat:53.3242,lng:-3.8276},
+{n:'Rhyl',c:'Denbighshire',na:'Wales',lat:53.3197,lng:-3.4939},
+{n:'Bangor',c:'Gwynedd',na:'Wales',lat:53.2283,lng:-4.1284},
+{n:'Caernarfon',c:'Gwynedd',na:'Wales',lat:53.1395,lng:-4.2770},
+{n:'Mold',c:'Flintshire',na:'Wales',lat:53.1668,lng:-3.1436},
+{n:'Abergavenny',c:'Monmouthshire',na:'Wales',lat:51.8228,lng:-3.0152},
+// SCOTLAND
+{n:'Glasgow',c:'Glasgow City',na:'Scotland',lat:55.8642,lng:-4.2518},
+{n:'Edinburgh',c:'City of Edinburgh',na:'Scotland',lat:55.9533,lng:-3.1883},
+{n:'Aberdeen',c:'Aberdeen City',na:'Scotland',lat:57.1497,lng:-2.0943},
+{n:'Dundee',c:'Dundee City',na:'Scotland',lat:56.4620,lng:-2.9707},
+{n:'Inverness',c:'Highland',na:'Scotland',lat:57.4778,lng:-4.2247},
+{n:'Paisley',c:'Renfrewshire',na:'Scotland',lat:55.8456,lng:-4.4237},
+{n:'East Kilbride',c:'South Lanarkshire',na:'Scotland',lat:55.7640,lng:-4.1769},
+{n:'Livingston',c:'West Lothian',na:'Scotland',lat:55.9004,lng:-3.5228},
+{n:'Hamilton',c:'South Lanarkshire',na:'Scotland',lat:55.7770,lng:-4.0398},
+{n:'Kirkcaldy',c:'Fife',na:'Scotland',lat:56.1116,lng:-3.1598},
+{n:'Dunfermline',c:'Fife',na:'Scotland',lat:56.0720,lng:-3.4525},
+{n:'Motherwell',c:'North Lanarkshire',na:'Scotland',lat:55.7904,lng:-3.9884},
+{n:'Coatbridge',c:'North Lanarkshire',na:'Scotland',lat:55.8601,lng:-4.0272},
+{n:'Airdrie',c:'North Lanarkshire',na:'Scotland',lat:55.8612,lng:-3.9802},
+{n:'Ayr',c:'South Ayrshire',na:'Scotland',lat:55.4590,lng:-4.6292},
+{n:'Kilmarnock',c:'East Ayrshire',na:'Scotland',lat:55.6111,lng:-4.4958},
+{n:'Dumfries',c:'Dumfries and Galloway',na:'Scotland',lat:55.0700,lng:-3.6055},
+{n:'Perth',c:'Perth and Kinross',na:'Scotland',lat:56.3950,lng:-3.4310},
+{n:'Stirling',c:'Stirling',na:'Scotland',lat:56.1165,lng:-3.9369},
+{n:'Falkirk',c:'Falkirk',na:'Scotland',lat:56.0019,lng:-3.7836},
+{n:'Greenock',c:'Inverclyde',na:'Scotland',lat:55.9474,lng:-4.7591},
+{n:'Fort William',c:'Highland',na:'Scotland',lat:56.8197,lng:-5.1047},
+{n:'St Andrews',c:'Fife',na:'Scotland',lat:56.3398,lng:-2.7967},
+{n:'Musselburgh',c:'East Lothian',na:'Scotland',lat:55.9426,lng:-3.0542},
+{n:'Elgin',c:'Moray',na:'Scotland',lat:57.6487,lng:-3.3139},
+// NORTHERN IRELAND
+{n:'Belfast',c:'Belfast',na:'Northern Ireland',lat:54.5973,lng:-5.9301},
+{n:'Derry',c:'Derry City and Strabane',na:'Northern Ireland',lat:54.9966,lng:-7.3086},
+{n:'Newtownabbey',c:'Antrim and Newtownabbey',na:'Northern Ireland',lat:54.6780,lng:-5.9168},
+{n:'Bangor (NI)',c:'Ards and North Down',na:'Northern Ireland',lat:54.6534,lng:-5.6698},
+{n:'Lisburn',c:'Lisburn and Castlereagh',na:'Northern Ireland',lat:54.5152,lng:-6.0586},
+{n:'Newry',c:'Newry Mourne and Down',na:'Northern Ireland',lat:54.1756,lng:-6.3400},
+{n:'Armagh',c:'Armagh City Banbridge and Craigavon',na:'Northern Ireland',lat:54.3503,lng:-6.6528},
+{n:'Ballymena',c:'Mid and East Antrim',na:'Northern Ireland',lat:54.8636,lng:-6.2799},
+{n:'Antrim',c:'Antrim and Newtownabbey',na:'Northern Ireland',lat:54.7189,lng:-6.2053},
+{n:'Omagh',c:'Fermanagh and Omagh',na:'Northern Ireland',lat:54.5978,lng:-7.2956},
+{n:'Enniskillen',c:'Fermanagh and Omagh',na:'Northern Ireland',lat:54.3447,lng:-7.6363},
+{n:'Coleraine',c:'Causeway Coast and Glens',na:'Northern Ireland',lat:55.1327,lng:-6.6685},
+{n:'Newtownards',c:'Ards and North Down',na:'Northern Ireland',lat:54.5927,lng:-5.6918},
+{n:'Craigavon',c:'Armagh City Banbridge and Craigavon',na:'Northern Ireland',lat:54.4428,lng:-6.3904}
+];
+
+// ── LOCATION PICKER ───────────────────────────────────────────────────────
+var selectedLocation=null;
+var _dropdownItems=[];
+var _focusedIdx=-1;
+var _locTimer=null;
+
+function buildCountySelect(){
+  var nations=['England','Scotland','Wales','Northern Ireland'];
+  var sel=document.getElementById('countySelect');
+  nations.forEach(function(nation){
+    var seen={};
+    var counties=TOWNS.filter(function(t){return t.na===nation;}).map(function(t){return t.c;}).filter(function(c){return seen[c]?false:(seen[c]=true);}).sort();
+    var og=document.createElement('optgroup');
+    og.label=nation;
+    counties.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;og.appendChild(o);});
+    sel.appendChild(og);
+  });
 }
-async function getGeo(q){
-  var k=q.toLowerCase().trim();
-  if(GEO_CACHE[k])return GEO_CACHE[k];
-  // postcode pattern
-  var pc=k.replace(/\s+/g,'').toUpperCase();
-  if(/^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$/i.test(pc)||/^[A-Z]{1,2}[0-9]+$/i.test(pc)){
-    try{
-      var r=await fetch('https://api.postcodes.io/postcodes/'+encodeURIComponent(pc));
-      var d=await r.json();
-      if(d.result)return{lat:d.result.latitude,lng:d.result.longitude,label:q.toUpperCase()};
-    }catch(e){}
-  }
-  // fallback: nominatim
+buildCountySelect();
+
+function onCountyChange(){
+  var county=document.getElementById('countySelect').value;
+  var sel=document.getElementById('countySelect');
+  sel.classList.toggle('chosen',!!county);
+  document.getElementById('areaInput').value='';
+  selectedLocation=null;
+  updateSearchBtn();
+  hideDropdown();
+  document.getElementById('areaInput').placeholder=county?'Type a town in '+county+'…':'Type a town or postcode…';
+}
+
+function updateSearchBtn(){
+  document.getElementById('searchBtn').disabled=!selectedLocation;
+}
+
+function onLocationInput(){
+  selectedLocation=null;
+  updateSearchBtn();
+  var q=document.getElementById('areaInput').value.trim();
+  if(!q||q.length<2){hideDropdown();return;}
+  clearTimeout(_locTimer);
+  _locTimer=setTimeout(function(){showLocationOptions(q);},150);
+}
+
+function showLocationOptions(q){
+  var county=document.getElementById('countySelect').value;
+  var ql=q.toLowerCase();
+  var isPC=/^[a-z]{1,2}[0-9]/i.test(q);
+  var filtered=TOWNS.filter(function(t){
+    var nm=t.n.toLowerCase();
+    return(!county||t.c===county)&&(nm.indexOf(ql)===0||nm.indexOf(ql)>0);
+  });
+  filtered.sort(function(a,b){
+    var as=a.n.toLowerCase().indexOf(ql)===0,bs=b.n.toLowerCase().indexOf(ql)===0;
+    if(as&&!bs)return -1;if(!as&&bs)return 1;return a.n.localeCompare(b.n);
+  });
+  var items=[];
+  if(isPC)items.push({type:'postcode',label:q});
+  filtered.slice(0,8).forEach(function(t){items.push({type:'town',data:t});});
+  renderDropdown(items);
+}
+
+function renderDropdown(items){
+  _dropdownItems=items;
+  _focusedIdx=-1;
+  var dd=document.getElementById('locDropdown');
+  if(!items.length){hideDropdown();return;}
+  var h='';
+  items.forEach(function(item,i){
+    if(item.type==='postcode'){
+      h+='<div class="loc-option loc-option-postcode" onclick="selectPostcode('+i+')"><span class="loc-opt-icon">&#128205;</span><span class="loc-opt-name">Search for <strong>'+item.label.toUpperCase()+'</strong></span><span class="loc-opt-sub">postcode lookup</span></div>';
+    }else{
+      var t=item.data;
+      h+='<div class="loc-option" onclick="selectTown('+i+')"><span class="loc-opt-icon">&#128205;</span><span class="loc-opt-name">'+t.n+'</span><span class="loc-opt-sub">'+t.c+'</span></div>';
+    }
+  });
+  dd.innerHTML=h;
+  dd.style.display='block';
+}
+
+function hideDropdown(){
+  document.getElementById('locDropdown').style.display='none';
+  _dropdownItems=[];_focusedIdx=-1;
+}
+
+function selectTown(i){
+  var item=_dropdownItems[i];
+  if(!item||item.type!=='town')return;
+  var t=item.data;
+  selectedLocation={label:t.n,lat:t.lat,lng:t.lng};
+  lastGeo=selectedLocation;
+  document.getElementById('areaInput').value=t.n+' \xb7 '+t.c;
+  hideDropdown();
+  updateSearchBtn();
+}
+
+async function selectPostcode(i){
+  var item=_dropdownItems[i];
+  if(!item)return;
+  var pc=item.label.replace(/\s/g,'').toUpperCase();
+  document.getElementById('areaInput').value=pc+'…';
+  hideDropdown();
   try{
-    var r2=await fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q+', UK')+'&format=json&limit=1');
-    var d2=await r2.json();
-    if(d2.length)return{lat:parseFloat(d2[0].lat),lng:parseFloat(d2[0].lon),label:d2[0].display_name.split(',')[0]};
-  }catch(e){}
-  return null;
+    var r=await fetch('https://api.postcodes.io/postcodes/'+encodeURIComponent(pc));
+    var d=await r.json();
+    if(d.result){
+      var town=d.result.admin_district||pc;
+      selectedLocation={label:town+' ('+d.result.postcode+')',lat:d.result.latitude,lng:d.result.longitude};
+      lastGeo=selectedLocation;
+      document.getElementById('areaInput').value=selectedLocation.label;
+      updateSearchBtn();
+    }else{
+      document.getElementById('areaInput').value='';
+      document.getElementById('areaInput').placeholder='Postcode not found — try again';
+    }
+  }catch(e){
+    document.getElementById('areaInput').value='';
+  }
 }
+
+function onLocationKeydown(e){
+  var dd=document.getElementById('locDropdown');
+  if(dd.style.display==='none')return;
+  var opts=dd.querySelectorAll('.loc-option');
+  if(e.key==='ArrowDown'){e.preventDefault();_focusedIdx=Math.min(_focusedIdx+1,opts.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();_focusedIdx=Math.max(_focusedIdx-1,0);}
+  else if(e.key==='Enter'&&_focusedIdx>=0){e.preventDefault();opts[_focusedIdx].click();return;}
+  else if(e.key==='Escape'){hideDropdown();return;}
+  else{_focusedIdx=-1;}
+  opts.forEach(function(o,i){o.classList.toggle('focused',i===_focusedIdx);});
+}
+
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.loc-wrap')&&!e.target.closest('.county-select'))hideDropdown();
+});
+
+
 
 // ── FILTERS ───────────────────────────────────────────────────────────────
 function applyFilters(p,dr){
@@ -623,15 +1065,92 @@ function applyFilters(p,dr){
     var ok3=pHChecked.some(function(v){var parts=v.split('-');return p.priceHalf>=parseInt(parts[0])&&p.priceHalf<=parseInt(parts[1]);});
     if(!ok3)return false;
   }
+  // Free/funded
+  var freeCheck=document.getElementById('freeCheck');
+  if(freeCheck&&freeCheck.checked&&!p.free)return false;
   // Rating
   var ratingEl=document.querySelector('input[name="rating"]:checked');
   if(ratingEl&&p.rP<parseFloat(ratingEl.value))return false;
   return true;
 }
 
+
+// ── FREE & FUNDED ─────────────────────────────────────────────────────────
+function toggleFreeFilter(){
+  var cb=document.getElementById('freeCheck');
+  cb.checked=!cb.checked;
+  syncFreeChip();
+  onChipChange();
+  // open budget panel briefly to show selection, then close
+  var panel=document.getElementById('filt-price');
+  if(cb.checked){panel.classList.add('open');document.getElementById('filt-price-btn').classList.add('panel-open','active');openPanelId='filt-price';}
+  else{panel.classList.remove('open');document.getElementById('filt-price-btn').classList.remove('panel-open');openPanelId=null;}
+}
+function syncFreeChip(){
+  var cb=document.getElementById('freeCheck');
+  document.getElementById('freeChip').classList.toggle('active',cb&&cb.checked);
+}
+
+
+// ── FILTER CHIP BUILDER (for no-results state) ────────────────────────────
+function buildFilterChips(){
+  var chips=[];
+  var cats=getSelectedCats();
+  cats.forEach(function(cat){
+    chips.push({label:cat,fn:(function(c){return function(){
+      document.querySelectorAll('.cat-tile[data-cat="'+c+'"]').forEach(function(b){b.classList.remove('active');});
+      selCats.delete(c);
+      if(selCats.size===0)document.getElementById('catAll').classList.add('active');
+      reRender();
+    };})(cat)});
+  });
+  var fc=document.getElementById('freeCheck');
+  if(fc&&fc.checked)chips.push({label:'Free & funded',fn:function(){fc.checked=false;syncFreeChip();onChipChange();reRender();}});
+  var ageLabels={'4-7':'Reception–Y2','7-11':'Y3–Y6','11-14':'Y7–Y9','14-16':'Y10–Y11','16-18':'Sixth Form'};
+  document.querySelectorAll('input[name="age"]:checked').forEach(function(i){
+    chips.push({label:'Age: '+(ageLabels[i.value]||i.value),fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
+  });
+  document.querySelectorAll('input[name="gender"]:checked').forEach(function(i){
+    chips.push({label:i.value,fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
+  });
+  document.querySelectorAll('input[name="session"]:checked').forEach(function(i){
+    chips.push({label:i.value,fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
+  });
+  document.querySelectorAll('input[name="daytype"]:checked').forEach(function(i){
+    chips.push({label:i.value==='weekdays'?'Weekdays':'Weekends',fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
+  });
+  var pLabels={'0-30':'Under £30','30-50':'£30–£50','50-75':'£50–£75','75-999':'£75+','0-15':'Under £15','15-25':'£15–£25','25-35':'£25–£35','35-999':'£35+'};
+  document.querySelectorAll('input[name="priceF"]:checked,input[name="priceH"]:checked').forEach(function(i){
+    chips.push({label:pLabels[i.value]||i.value,fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
+  });
+  var re=document.querySelector('input[name="rating"]:checked');
+  if(re)chips.push({label:re.value+'★+ rating',fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(re)});
+  var dr=getDateRange();
+  if(dr)chips.push({label:'Dates: '+dr.label,fn:function(){clearDates();reRender();}});
+  return chips;
+}
+
+function reRender(){
+  if(!lastGeo)return;
+  var cats=getSelectedCats();
+  var maxDist=parseFloat(document.getElementById('distSelect').value);
+  var dr=getDateRange();
+  var anyRefine=document.querySelectorAll('.filt-panel input:checked').length>0||!!dr;
+  var list=P.map(function(p){return Object.assign({},p,{dist:hav(lastGeo.lat,lastGeo.lng,p.lat,p.lng)});})
+    .sort(function(a,b){return a.dist-b.dist;})
+    .filter(function(p){
+      if(cats.length&&!cats.includes(p.cat))return false;
+      if(maxDist>0&&p.dist>maxDist)return false;
+      if(anyRefine&&!applyFilters(p,dr))return false;
+      return true;
+    });
+  render(list,lastGeo.label,maxDist,cats);
+}
+
 // ── CLEAR ALL FILTERS ─────────────────────────────────────────────────────
 function clearAllFilters(){
   document.querySelectorAll('.filt-panel input').forEach(function(i){i.checked=false;});
+  syncFreeChip();
   document.getElementById('dateFrom').value='';
   document.getElementById('dateTo').value='';
   document.getElementById('dateClearBtn').classList.remove('show');
@@ -654,14 +1173,12 @@ function clearAllFilters(){
 
 // ── RUN SEARCH ───────────────────────────────────────────────────────────
 async function runSearch(){
-  var q=document.getElementById('areaInput').value.trim();
-  if(!q){alert('Please enter a town, school or postcode.');return;}
+  if(!selectedLocation)return;
+  var g=selectedLocation;
+  lastGeo=g;
   var btn=document.getElementById('searchBtn');
   btn.innerHTML='Searching…';
   btn.disabled=true;
-  var g=await getGeo(q);
-  if(!g){btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><\/svg> Search';btn.disabled=false;alert('Location not found. Try a different town or postcode.');return;}
-  lastGeo=g;
   var cats=getSelectedCats();
   var maxDist=parseFloat(document.getElementById('distSelect').value);
   var dr=getDateRange();
@@ -676,7 +1193,7 @@ async function runSearch(){
     });
   render(list,g.label,maxDist,cats);
   btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><\/svg> Search';
-  btn.disabled=false;
+  btn.disabled=false; // re-enable (selectedLocation still valid)
   var catLabel=cats.length?cats.join(', '):'All activities';
   var distLabel=maxDist>0?' · within '+maxDist+' mi':'';
   document.getElementById('stickySummary').innerHTML='<strong>'+catLabel+'</strong> near <strong>'+g.label+'</strong>'+distLabel;
@@ -694,19 +1211,51 @@ function render(list,locLabel,maxDist,cats){
 
   if(!list.length){
     _suggestions=[];
-    var newDist=maxDist===5?'10':'20';
-    if(maxDist>0&&maxDist<20)_suggestions.push(function(){document.getElementById('distSelect').value=newDist;runSearch();});
-    if(cats.length)_suggestions.push(function(){document.querySelectorAll('.cat-tile').forEach(function(b){b.classList.remove('active');});selCats.clear();document.getElementById('catAll').classList.add('active');runSearch();});
-    if(document.querySelectorAll('input[name="when"]:checked').length)_suggestions.push(function(){document.querySelectorAll('input[name="when"]').forEach(function(i){i.checked=false;});onChipChange();runSearch();});
-    if(document.querySelectorAll('input[name="gender"]:checked').length)_suggestions.push(function(){document.querySelectorAll('input[name="gender"]').forEach(function(i){i.checked=false;});onChipChange();runSearch();});
-    var labels=['Try '+(maxDist===5?10:20)+' miles','Try all activities','Any day of week','Any gender'];
-    var sugHtml='';
-    if(_suggestions.length){
-      sugHtml='<p class="no-suggestions-title">Quick fixes</p><div class="no-suggestion-chips">';
-      for(var si=0;si<_suggestions.length;si++){sugHtml+='<button class="no-chip" onclick="applyFix('+si+')">'+labels[si]+'</button>';}
-      sugHtml+='</div>';
+    // ── Removable active-filter chips ──────────────────────────────────────
+    var filterChips=buildFilterChips();
+    filterChips.forEach(function(chip){_suggestions.push(chip.fn);});
+    var filterChipHtml='';
+    if(filterChips.length){
+      filterChipHtml+='<p class="no-remove-label">Active filters — tap to remove</p>';
+      filterChipHtml+='<div class="no-filter-tags">';
+      for(var fi=0;fi<filterChips.length;fi++){
+        filterChipHtml+='<button class="no-filter-tag" onclick="applyFix('+fi+')">'+filterChips[fi].label+' &times;</button>';
+      }
+      filterChipHtml+='</div>';
+      filterChipHtml+='<div class="no-divider"></div>';
     }
-    sec.innerHTML='<div class="no-results"><div class="no-icon">&#128269;</div><h3>No '+catTxt+' found near '+locLabel+'</h3><p>Try adjusting your filters or expanding the search distance.</p>'+sugHtml+'</div>';
+    // ── Quick-fix distance / category suggestions ──────────────────────────
+    var qBase=_suggestions.length;
+    var newDist=maxDist===5?'10':'20';
+    var qChips=[];
+    if(maxDist>0&&maxDist<20){
+      _suggestions.push(function(){document.getElementById('distSelect').value=newDist;runSearch();});
+      qChips.push('Try '+(maxDist===5?10:20)+' miles');
+    }
+    if(cats.length){
+      _suggestions.push(function(){document.querySelectorAll('.cat-tile').forEach(function(b){b.classList.remove('active');});selCats.clear();document.getElementById('catAll').classList.add('active');runSearch();});
+      qChips.push('Try all activities');
+    }
+    var qHtml='';
+    if(qChips.length){
+      qHtml='<p class="no-suggestions-title">Quick fixes</p><div class="no-suggestion-chips">';
+      for(var qi=0;qi<qChips.length;qi++){
+        qHtml+='<button class="no-chip" onclick="applyFix('+(qBase+qi)+')">'+qChips[qi]+'</button>';
+      }
+      qHtml+='</div>';
+    }
+    // ── Edit search button ─────────────────────────────────────────────────
+    var editBtnHtml='<button class="no-edit-search" onclick="scrollToSearch()">'
+      +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>'
+      +' Edit your search</button>';
+    sec.innerHTML='<div class="no-results">'
+      +'<div class="no-icon">&#128269;</div>'
+      +'<h3>No '+catTxt+' found near '+locLabel+'</h3>'
+      +'<p>Remove a filter below, or go back and try a different search.</p>'
+      +filterChipHtml
+      +qHtml
+      +editBtnHtml
+      +'</div>';
     sec.scrollIntoView({behavior:'smooth'});
     return;
   }
