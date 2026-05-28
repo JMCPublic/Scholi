@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Your Business — Scholi</title>
+<style>
+  :root{
+    --accent:#1B6B5E;--accent-h:#145449;--accent-xl:#E8F5F2;
+    --bg:#F8F7F5;--surface:#FFFFFF;--border:#E5E7EB;--border-strong:#D1D5DB;
+    --text:#1A1A1A;--text-mid:#4B5563;--text-muted:#9CA3AF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+  /* NAV */
+  .top-nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{font-size:1.25rem;font-weight:800;color:var(--accent);text-decoration:none;letter-spacing:-.02em}
+  .nav-back{font-size:.84rem;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:5px}
+  .nav-back:hover{color:var(--accent)}
+
+  /* HERO */
+  .page-hero{background:var(--accent);color:#fff;padding:40px 20px 36px;text-align:center}
+  .page-hero h1{font-size:1.6rem;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}
+  .page-hero p{font-size:.95rem;opacity:.88;max-width:520px;margin:0 auto;line-height:1.55}
+
+  /* BENEFITS BAR */
+  .benefits-bar{background:var(--accent-xl);border-bottom:1px solid #C6E8E2;padding:14px 20px}
+  .benefits-inner{max-width:680px;margin:0 auto;display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+  .benefit{display:flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;color:var(--accent)}
+  .benefit svg{flex-shrink:0}
+
+  /* FORM WRAPPER */
+  .form-wrap{max-width:680px;margin:32px auto 60px;padding:0 16px}
+
+  /* SECTIONS */
+  .form-section{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
+  .form-section-title{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .form-section-title span{background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
+
+  /* FIELDS */
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:480px){.field-row{grid-template-columns:1fr}}
+  label{display:block;font-size:.82rem;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+  label .req{color:#EF4444;margin-left:2px}
+  label .hint{font-weight:400;color:var(--text-muted);margin-left:4px}
+  input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],select,textarea{
+    width:100%;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:8px;
+    font-size:.88rem;color:var(--text);background:#fff;outline:none;transition:border-color .15s;
+    font-family:inherit
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,107,94,.1)}
+  textarea{min-height:90px;resize:vertical;line-height:1.5}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+  /* CHIP CHECKBOXES */
+  .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip-opt{cursor:pointer}
+  .chip-opt input{display:none}
+  .chip-opt span{display:inline-block;padding:7px 14px;border:1.5px solid var(--border-strong);border-radius:20px;font-size:.82rem;font-weight:600;color:var(--text-mid);background:#fff;transition:all .15s;user-select:none}
+  .chip-opt input:checked + span{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip-opt span:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* PRICE ROW */
+  .price-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:480px){.price-row{grid-template-columns:1fr}}
+  .price-field{position:relative}
+  .price-field input{padding-left:28px}
+  .price-prefix{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:.88rem;color:var(--text-muted);pointer-events:none}
+
+  /* FREE TOGGLE */
+  .free-toggle-wrap{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--accent-xl);border:1.5px solid #A7D7CF;border-radius:10px;cursor:pointer}
+  .free-toggle-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+  .free-toggle-wrap label{font-size:.88rem;font-weight:700;color:var(--accent);cursor:pointer;margin:0}
+
+  /* DIVIDER */
+  .field-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+  /* COMPLIANCE */
+  .compliance-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .compliance-item:last-child{border-bottom:none}
+  .compliance-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;margin-top:1px;cursor:pointer}
+  .compliance-label{font-size:.85rem;color:var(--text-mid);line-height:1.5}
+  .compliance-label strong{color:var(--text)}
+
+  /* SUBMIT */
+  .submit-area{text-align:center;margin-top:28px}
+  .submit-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:15px 40px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .15s;letter-spacing:-.01em}
+  .submit-btn:hover{background:var(--accent-h)}
+  .submit-note{font-size:.78rem;color:var(--text-muted);margin-top:10px}
+
+  /* SUCCESS STATE */
+  .success-msg{display:none;text-align:center;padding:40px 20px;background:#fff;border:1px solid var(--border);border-radius:14px}
+  .success-msg.show{display:block}
+  .success-icon{font-size:3rem;margin-bottom:14px}
+  .success-msg h2{font-size:1.3rem;font-weight:800;color:var(--accent);margin-bottom:8px}
+  .success-msg p{font-size:.9rem;color:var(--text-mid);line-height:1.6;max-width:420px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-logo">Scholi</a>
+  <a href="index.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to search
+  </a>
+</nav>
+
+<div class="page-hero">
+  <h1>&#127979; List your activities on Scholi</h1>
+  <p>Join hundreds of providers reaching families across the UK. Free to list, no commission, no catch.</p>
+</div>
+
+<div class="benefits-bar">
+  <div class="benefits-inner">
+    <div class="benefit">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Free basic listing
+    </div>
+    <div class="benefit">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Reviewed within 3 working days
+    </div>
+    <div class="benefit">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Visible to families searching near you
+    </div>
+    <div class="benefit">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Update your listing any time
+    </div>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <div id="successMsg" class="success-msg">
+    <div class="success-icon">&#127881;</div>
+    <h2>Thanks &mdash; we&rsquo;ve got your details!</h2>
+    <p>We&rsquo;ll review your submission and be in touch within 3 working days. If your listing is approved, it will appear in search results straight away.</p>
+  </div>
+
+  <form id="supplierForm" onsubmit="handleSubmit(event)">
+
+    <!-- SECTION 1: ABOUT YOUR BUSINESS -->
+    <div class="form-section">
+      <div class="form-section-title"><span>1</span>About your business</div>
+
+      <div class="field">
+        <label>Business / organisation name <span class="req">*</span></label>
+        <input type="text" name="bizName" placeholder="e.g. Surrey Sports Academy" required>
+      </div>
+
+      <div class="field">
+        <label>Activity type <span class="req">*</span></label>
+        <select name="activityType" required>
+          <option value="">Select a category&hellip;</option>
+          <option value="Sports">Sports &amp; fitness</option>
+          <option value="Dance">Dance</option>
+          <option value="Drama">Drama &amp; performing arts</option>
+          <option value="Creative">Creative arts &amp; crafts</option>
+          <option value="Learning">Learning &amp; STEM</option>
+          <option value="General">General / multi-activity</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Short description <span class="req">*</span> <span class="hint">(2&ndash;3 sentences shown in search results)</span></label>
+        <textarea name="description" placeholder="Tell families what makes your activities special — qualifications, approach, what a typical day looks like." required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Website <span class="hint">(optional)</span></label>
+        <input type="url" name="website" placeholder="https://www.example.co.uk">
+      </div>
+    </div>
+
+    <!-- SECTION 2: LOCATION -->
+    <div class="form-section">
+      <div class="form-section-title"><span>2</span>Where you run activities</div>
+
+      <div class="field">
+        <label>Venue / address <span class="req">*</span></label>
+        <input type="text" name="address" placeholder="Building name and street" required>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Town or city <span class="req">*</span></label>
+          <input type="text" name="town" placeholder="e.g. Guildford" required>
+        </div>
+        <div class="field">
+          <label>Postcode <span class="req">*</span></label>
+          <input type="text" name="postcode" placeholder="e.g. GU1 3JA" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Do you run activities at multiple venues? <span class="hint">(optional)</span></label>
+        <input type="text" name="extraVenues" placeholder="List any other towns or postcodes, separated by commas">
+      </div>
+    </div>
+
+    <!-- SECTION 3: WHO IT'S FOR -->
+    <div class="form-section">
+      <div class="form-section-title"><span>3</span>Who it&rsquo;s for</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Minimum age <span class="req">*</span></label>
+          <input type="number" name="ageMin" min="0" max="25" placeholder="e.g. 5" required>
+        </div>
+        <div class="field">
+          <label>Maximum age <span class="req">*</span></label>
+          <input type="number" name="ageMax" min="0" max="25" placeholder="e.g. 16" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Gender <span class="req">*</span></label>
+        <div class="chip-group">
+          <label class="chip-opt"><input type="radio" name="gender" value="Mixed" required><span>Mixed</span></label>
+          <label class="chip-opt"><input type="radio" name="gender" value="Boys"><span>Boys only</span></label>
+          <label class="chip-opt"><input type="radio" name="gender" value="Girls"><span>Girls only</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Session types offered <span class="req">*</span></label>
+        <div class="chip-group">
+          <label class="chip-opt"><input type="checkbox" name="session" value="Half day"><span>Half day</span></label>
+          <label class="chip-opt"><input type="checkbox" name="session" value="Full day"><span>Full day</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>When do you run? <span class="req">*</span></label>
+        <div class="chip-group">
+          <label class="chip-opt"><input type="checkbox" name="when" value="weekdays"><span>Weekdays</span></label>
+          <label class="chip-opt"><input type="checkbox" name="when" value="weekends"><span>Weekends</span></label>
+          <label class="chip-opt"><input type="checkbox" name="when" value="school_hols"><span>School holidays</span></label>
+          <label class="chip-opt"><input type="checkbox" name="when" value="evenings"><span>Evenings</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Typical holiday periods <span class="hint">(tick all that apply)</span></label>
+        <div class="chip-group">
+          <label class="chip-opt"><input type="checkbox" name="hols" value="summer"><span>Summer</span></label>
+          <label class="chip-opt"><input type="checkbox" name="hols" value="easter"><span>Easter</span></label>
+          <label class="chip-opt"><input type="checkbox" name="hols" value="christmas"><span>Christmas</span></label>
+          <label class="chip-opt"><input type="checkbox" name="hols" value="half_term"><span>Half terms</span></label>
+          <label class="chip-opt"><input type="checkbox" name="hols" value="year_round"><span>Year round</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: PRICING -->
+    <div class="form-section">
+      <div class="form-section-title"><span>4</span>Pricing</div>
+
+      <div class="free-toggle-wrap" style="margin-bottom:18px">
+        <input type="checkbox" id="isFreeToggle" name="isFree" value="yes" onchange="togglePricing(this)">
+        <label for="isFreeToggle">&#127807; This activity is free or funded (e.g. HAF, council-funded, charity)</label>
+      </div>
+
+      <div id="pricingFields">
+        <div class="price-row">
+          <div class="field price-field">
+            <label>Full day price <span class="hint">(per child)</span></label>
+            <span class="price-prefix">&pound;</span>
+            <input type="number" name="priceFull" min="0" step="0.50" placeholder="e.g. 45">
+          </div>
+          <div class="field price-field">
+            <label>Half day price <span class="hint">(per child)</span></label>
+            <span class="price-prefix">&pound;</span>
+            <input type="number" name="priceHalf" min="0" step="0.50" placeholder="e.g. 25">
+          </div>
+        </div>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-top:4px">Leave blank if you don&rsquo;t offer that session type.</p>
+      </div>
+
+      <div id="fundingFields" style="display:none">
+        <div class="field">
+          <label>Funding source <span class="hint">(optional)</span></label>
+          <input type="text" name="fundingSource" placeholder="e.g. HAF programme, council grant, charity-funded">
+        </div>
+        <div class="field">
+          <label>Any eligibility criteria? <span class="hint">(optional)</span></label>
+          <input type="text" name="eligibility" placeholder="e.g. Free school meals, looked-after children, all families welcome">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: CONTACT -->
+    <div class="form-section">
+      <div class="form-section-title"><span>5</span>Contact details</div>
+
+      <div class="field">
+        <label>Contact name <span class="req">*</span></label>
+        <input type="text" name="contactName" placeholder="Your full name" required>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Email address <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="you@example.co.uk" required>
+        </div>
+        <div class="field">
+          <label>Phone number</label>
+          <input type="tel" name="phone" placeholder="e.g. 01483 123456">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>How did you hear about Scholi? <span class="hint">(optional)</span></label>
+        <select name="referral">
+          <option value="">Select&hellip;</option>
+          <option value="google">Google / web search</option>
+          <option value="social">Social media</option>
+          <option value="council">Council or local authority</option>
+          <option value="word_of_mouth">Word of mouth</option>
+          <option value="email">Email from Scholi</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECTION 6: COMPLIANCE -->
+    <div class="form-section">
+      <div class="form-section-title"><span>6</span>Safety &amp; compliance</div>
+      <p style="font-size:.82rem;color:var(--text-mid);margin-bottom:16px;line-height:1.5">All providers on Scholi must meet our minimum standards. Please confirm the following.</p>
+
+      <div class="compliance-item">
+        <input type="checkbox" id="c1" name="comp_dbs" required>
+        <div class="compliance-label"><strong>DBS checks</strong> &mdash; All staff and volunteers who work with children hold a valid enhanced DBS certificate.</div>
+      </div>
+      <div class="compliance-item">
+        <input type="checkbox" id="c2" name="comp_insurance" required>
+        <div class="compliance-label"><strong>Public liability insurance</strong> &mdash; We hold valid public liability insurance appropriate for activities involving children.</div>
+      </div>
+      <div class="compliance-item">
+        <input type="checkbox" id="c3" name="comp_safeguarding" required>
+        <div class="compliance-label"><strong>Safeguarding policy</strong> &mdash; We have a written safeguarding policy and a named safeguarding lead.</div>
+      </div>
+      <div class="compliance-item">
+        <input type="checkbox" id="c4" name="comp_accurate" required>
+        <div class="compliance-label"><strong>Accurate information</strong> &mdash; The details I have provided are accurate and I will keep them up to date.</div>
+      </div>
+      <div class="compliance-item">
+        <input type="checkbox" id="c5" name="comp_terms" required>
+        <div class="compliance-label">I agree to Scholi&rsquo;s <a href="#" style="color:var(--accent)">terms for listed providers</a> and understand my listing may be reviewed or removed if standards are not met.</div>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <button type="submit" class="submit-btn">Submit for review &rarr;</button>
+      <p class="submit-note">We review every submission manually and aim to respond within 3 working days.</p>
+    </div>
+
+  </form>
+</div>
+
+<script>
+function togglePricing(cb){
+  document.getElementById('pricingFields').style.display = cb.checked ? 'none' : 'block';
+  document.getElementById('fundingFields').style.display = cb.checked ? 'block' : 'none';
+}
+
+function handleSubmit(e){
+  e.preventDefault();
+  var form = document.getElementById('supplierForm');
+  var success = document.getElementById('successMsg');
+  // Collect data (in production this would POST to an API / Google Sheets webhook)
+  var data = {};
+  new FormData(form).forEach(function(v,k){
+    if(data[k]){data[k]=data[k]+','+v;}else{data[k]=v;}
+  });
+  console.log('Submission:', JSON.stringify(data, null, 2));
+  // Show success
+  form.style.display = 'none';
+  success.classList.add('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

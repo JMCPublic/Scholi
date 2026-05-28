@@ -117,6 +117,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 .search-btn:disabled{opacity:.6;cursor:not-allowed}
 
 /* ── RESULTS SECTION ── */
+
+
+.supplier-cta{background:#EFF6FF;border-bottom:1px solid #DBEAFE;padding:14px 16px}
+.supplier-cta-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.supplier-cta-text{display:flex;align-items:center;gap:12px;flex:1;min-width:220px}
+.supplier-cta-emoji{font-size:1.5rem;flex-shrink:0}
+.supplier-cta-text strong{display:block;font-size:.88rem;color:#1A1A1A;margin-bottom:2px}
+.supplier-cta-sub{font-size:.78rem;color:#6B7280}
+.supplier-cta-btn{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:9px 17px;font-size:.82rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s}
+.supplier-cta-btn:hover{background:var(--accent-h)}
 .results-section{max-width:700px;margin:0 auto;padding:20px 16px 60px}
 .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
 .results-count{font-size:.88rem;color:var(--text-mid)}
@@ -230,6 +240,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 
 /* ── FREE & FUNDED CHIP ── */
 .free-chip-row{margin-bottom:10px}
+.budget-toggle-row{display:flex;gap:10px;margin-bottom:4px}
+.budget-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);border:2px solid var(--border-strong);border-radius:10px;padding:13px 10px;font-size:.88rem;font-weight:700;color:var(--text-mid);cursor:pointer;transition:all .18s}
+.budget-btn:hover{border-color:var(--accent);color:var(--accent)}
+.budget-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(27,107,94,.22)}
+.budget-toggle-row{display:flex;gap:10px;margin-bottom:4px}
+.budget-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);border:2px solid var(--border-strong);border-radius:10px;padding:13px 10px;font-size:.88rem;font-weight:700;color:var(--text-mid);cursor:pointer;transition:all .18s}
+.budget-btn:hover{border-color:var(--accent);color:var(--accent)}
+.budget-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(27,107,94,.22)}
+.budget-btn.budget-free.active{background:#1B6B5E;border-color:#1B6B5E}
 .free-chip{display:inline-flex;align-items:center;gap:7px;background:var(--accent-xl);color:var(--accent);border:1.5px solid var(--accent);border-radius:20px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .18s}
 .free-chip:hover{background:var(--accent);color:#fff}
 .free-chip.active{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(27,107,94,.25)}
@@ -313,12 +332,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
     </div>
   </div>
 
-  <!-- STEP 3: NARROW IT DOWN -->
+  <!-- STEP 3: YOUR BUDGET -->
   <div class="step-block">
-    <div class="step-label"><span class="step-num">3</span>Narrow it down <span style="font-size:.7rem;opacity:.6;text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
-    <div class="free-chip-row">
-      <button class="free-chip" id="freeChip" onclick="toggleFreeFilter()">&#127807; Free &amp; funded activities</button>
+    <div class="step-label"><span class="step-num">3</span>Your Budget</div>
+    <div class="budget-toggle-row">
+      <button class="budget-btn" id="budgetPaid" onclick="setBudget('paid')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Paid activities
+      </button>
+      <button class="budget-btn budget-free" id="budgetFree" onclick="setBudget('free')">
+        &#127807; Free &amp; Funded
+      </button>
     </div>
+    <!-- hidden freeCheck kept for applyFilters compatibility -->
+    <input type="checkbox" name="free" value="free" id="freeCheck" style="display:none" onchange="onChipChange()">
+  </div>
+
+  <!-- STEP 4: NARROW IT DOWN -->
+  <div class="step-block">
+    <div class="step-label"><span class="step-num">4</span>Narrow it down <span style="font-size:.7rem;opacity:.6;text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></div>
     <div class="filt-bar">
       <button class="filt-btn" id="filt-age-btn" onclick="togglePanel('filt-age')">
         <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
@@ -330,15 +362,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
       </button>
       <button class="filt-btn" id="filt-session-btn" onclick="togglePanel('filt-session')">
         <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-        Session <span class="filt-chevron">▼</span>
-      </button>
-      <button class="filt-btn" id="filt-when-btn" onclick="togglePanel('filt-when')">
-        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        When <span class="filt-chevron">▼</span>
-      </button>
-      <button class="filt-btn" id="filt-price-btn" onclick="togglePanel('filt-price')">
-        <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9H10a2 2 0 000 4h4a2 2 0 010 4H9.5"/><line x1="12" y1="7" x2="12" y2="17"/></svg>
-        Price <span class="filt-chevron">▼</span>
+        Session &amp; dates <span class="filt-chevron">▼</span>
       </button>
       <button class="filt-btn" id="filt-rating-btn" onclick="togglePanel('filt-rating')">
         <svg class="filt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -391,36 +415,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
       <div class="date-note">Dates auto-filter by weekday / weekend.</div>
     </div>
 
-    <!-- PRICE PANEL -->
-    <div class="filt-panel" id="filt-price">
-      <div class="filt-panel-title">Full day price</div>
-      <div class="filt-chips">
-        <label class="chip-label"><input type="checkbox" name="priceF" value="0-30" onchange="onChipChange()"><span class="chip">Under &pound;30</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceF" value="30-50" onchange="onChipChange()"><span class="chip">&pound;30&ndash;&pound;50</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceF" value="50-75" onchange="onChipChange()"><span class="chip">&pound;50&ndash;&pound;75</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceF" value="75-999" onchange="onChipChange()"><span class="chip">&pound;75+</span></label>
-      </div>
-      <div class="filt-chips" style="margin:12px 0;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-        <label class="chip-label"><input type="checkbox" name="free" value="free" id="freeCheck" onchange="onChipChange();syncFreeChip()"><span class="chip" style="background:#E8F5F2;border-color:#1B6B5E;color:#1B6B5E;font-weight:700">&#127807; Free &amp; funded</span></label>
-      </div>
-      <div class="filt-panel-title">Half day price</div>
-      <div class="filt-chips">
-        <label class="chip-label"><input type="checkbox" name="priceH" value="0-15" onchange="onChipChange()"><span class="chip">Under &pound;15</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceH" value="15-25" onchange="onChipChange()"><span class="chip">&pound;15&ndash;&pound;25</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceH" value="25-35" onchange="onChipChange()"><span class="chip">&pound;25&ndash;&pound;35</span></label>
-        <label class="chip-label"><input type="checkbox" name="priceH" value="35-999" onchange="onChipChange()"><span class="chip">&pound;35+</span></label>
-      </div>
-    </div>
-
     <!-- RATING PANEL -->
     <div class="filt-panel" id="filt-rating">
       <div class="filt-panel-title">Minimum rating</div>
       <div class="filt-chips">
-        <label class="chip-label"><input type="radio" name="rating" value="4" onchange="onChipChange()"><span class="chip">4&#9733; and above</span></label>
-        <label class="chip-label"><input type="radio" name="rating" value="4.5" onchange="onChipChange()"><span class="chip">4.5&#9733; and above</span></label>
-        <label class="chip-label"><input type="radio" name="rating" value="4.8" onchange="onChipChange()"><span class="chip">4.8&#9733; and above</span></label>
+        <label class="chip-label"><input type="radio" name="rating" value="4" onchange="onChipChange()"><span class="chip">4★ and above</span></label>
+        <label class="chip-label"><input type="radio" name="rating" value="4.5" onchange="onChipChange()"><span class="chip">4.5★ and above</span></label>
+        <label class="chip-label"><input type="radio" name="rating" value="4.8" onchange="onChipChange()"><span class="chip">4.8★ and above</span></label>
       </div>
     </div>
+  </div>
   </div>
 
   <div class="search-btn-wrap">
@@ -432,6 +436,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 
 </div><!-- /hero-inner -->
 </header>
+
+<!-- SUPPLIER CTA BANNER -->
+<div class="supplier-cta">
+  <div class="supplier-cta-inner">
+    <div class="supplier-cta-text">
+      <span class="supplier-cta-emoji">&#127979;</span>
+      <div>
+        <strong>Run activities for children?</strong>
+        <span class="supplier-cta-sub">Get in front of thousands of local families &mdash; free to list.</span>
+      </div>
+    </div>
+    <a href="add-your-business.html" class="supplier-cta-btn">List your business &rarr;</a>
+  </div>
+</div>
+
 
 <div id="results" class="results-section" style="display:none"></div>
 
@@ -554,13 +573,13 @@ function onDateChange(){
   var f=document.getElementById('dateFrom').value;
   var t=document.getElementById('dateTo').value;
   document.getElementById('dateClearBtn').classList.toggle('show',!!(f||t));
-  document.getElementById('filt-when-btn').classList.toggle('active',!!(f||t));
+  // filt-when-btn removed
 }
 function clearDates(){
   document.getElementById('dateFrom').value='';
   document.getElementById('dateTo').value='';
   document.getElementById('dateClearBtn').classList.remove('show');
-  document.getElementById('filt-when-btn').classList.remove('active');
+  // filt-when-btn removed
 }
 function getDateRange(){
   var f=document.getElementById('dateFrom').value;
@@ -1065,9 +1084,9 @@ function applyFilters(p,dr){
     var ok3=pHChecked.some(function(v){var parts=v.split('-');return p.priceHalf>=parseInt(parts[0])&&p.priceHalf<=parseInt(parts[1]);});
     if(!ok3)return false;
   }
-  // Free/funded
-  var freeCheck=document.getElementById('freeCheck');
-  if(freeCheck&&freeCheck.checked&&!p.free)return false;
+  // Budget mode
+  if(budgetMode==='free'&&!p.free)return false;
+  if(budgetMode==='paid'&&p.free)return false;
   // Rating
   var ratingEl=document.querySelector('input[name="rating"]:checked');
   if(ratingEl&&p.rP<parseFloat(ratingEl.value))return false;
@@ -1075,21 +1094,29 @@ function applyFilters(p,dr){
 }
 
 
-// ── FREE & FUNDED ─────────────────────────────────────────────────────────
-function toggleFreeFilter(){
+// ── BUDGET MODE ──────────────────────────────────────────────────────────────
+var budgetMode='all';
+function setBudget(mode){
+  budgetMode=(budgetMode===mode)?'all':mode;
   var cb=document.getElementById('freeCheck');
-  cb.checked=!cb.checked;
-  syncFreeChip();
+  if(cb){cb.checked=(budgetMode==='free');onChipChange();}
+  document.getElementById('budgetPaid').classList.toggle('active',budgetMode==='paid');
+  document.getElementById('budgetFree').classList.toggle('active',budgetMode==='free');
+}
+
+// ── BUDGET MODE ──────────────────────────────────────────────────────────────
+var budgetMode='all';
+function setBudget(mode){
+  budgetMode=(budgetMode===mode)?'all':mode;
+  var cb=document.getElementById('freeCheck');
+  if(cb){cb.checked=(budgetMode==='free');}
   onChipChange();
-  // open budget panel briefly to show selection, then close
-  var panel=document.getElementById('filt-price');
-  if(cb.checked){panel.classList.add('open');document.getElementById('filt-price-btn').classList.add('panel-open','active');openPanelId='filt-price';}
-  else{panel.classList.remove('open');document.getElementById('filt-price-btn').classList.remove('panel-open');openPanelId=null;}
+  document.getElementById('budgetPaid').classList.toggle('active',budgetMode==='paid');
+  document.getElementById('budgetFree').classList.toggle('active',budgetMode==='free');
 }
-function syncFreeChip(){
-  var cb=document.getElementById('freeCheck');
-  document.getElementById('freeChip').classList.toggle('active',cb&&cb.checked);
-}
+
+// ── FREE & FUNDED ─────────────────────────────────────────────────────────
+function toggleFreeFilter(){setBudget('free');}
 
 
 // ── FILTER CHIP BUILDER (for no-results state) ────────────────────────────
@@ -1104,8 +1131,8 @@ function buildFilterChips(){
       reRender();
     };})(cat)});
   });
-  var fc=document.getElementById('freeCheck');
-  if(fc&&fc.checked)chips.push({label:'Free & funded',fn:function(){fc.checked=false;syncFreeChip();onChipChange();reRender();}});
+  if(budgetMode==='free')chips.push({label:'Free & funded',fn:function(){setBudget('free');reRender();}});
+  if(budgetMode==='paid')chips.push({label:'Paid activities',fn:function(){setBudget('paid');reRender();}});
   var ageLabels={'4-7':'Reception–Y2','7-11':'Y3–Y6','11-14':'Y7–Y9','14-16':'Y10–Y11','16-18':'Sixth Form'};
   document.querySelectorAll('input[name="age"]:checked').forEach(function(i){
     chips.push({label:'Age: '+(ageLabels[i.value]||i.value),fn:(function(x){return function(){x.checked=false;onChipChange();reRender();};})(i)});
@@ -1149,6 +1176,7 @@ function reRender(){
 
 // ── CLEAR ALL FILTERS ─────────────────────────────────────────────────────
 function clearAllFilters(){
+  budgetMode='all';document.getElementById('budgetPaid').classList.remove('active');document.getElementById('budgetFree').classList.remove('active');
   document.querySelectorAll('.filt-panel input').forEach(function(i){i.checked=false;});
   syncFreeChip();
   document.getElementById('dateFrom').value='';
